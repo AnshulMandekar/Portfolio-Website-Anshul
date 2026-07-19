@@ -172,27 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Handle Contact Form Submission
-  const contactForm = document.getElementById('portfolio-contact-form');
-  const successMessage = document.querySelector('.contact-success');
 
-  if (contactForm && successMessage) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Simulate form submission
-      successMessage.style.display = 'block';
-      successMessage.textContent = "Thank you! Your message has been sent successfully. Anshul will get back to you shortly.";
-      
-      contactForm.reset();
-      
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        successMessage.style.display = 'none';
-      }, 5000);
-    });
-  }
-  
   // Set initial UI state
   updateUI(activeIndex);
 });
