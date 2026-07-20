@@ -2,7 +2,7 @@
 
 > **A premium, interactive, full-stack portfolio website built with vanilla HTML, CSS, and JavaScript — featuring a slide-based presentation mode and a fully playable 3D WebGL portfolio game.**
 
-[![Live Site](https://img.shields.io/badge/Live%20Site-Visit-7c83e8?style=for-the-badge&logo=googlechrome&logoColor=white)](https://anshulmandekar.onrender.com)
+[![Live Site](https://img.shields.io/badge/Live%20Site-Visit-7c83e8?style=for-the-badge&logo=googlechrome&logoColor=white)](https://portfolio-website-anshul-1.onrender.com/anshul.html)
 [![GitHub](https://img.shields.io/badge/GitHub-AnshulMandekar-181717?style=for-the-badge&logo=github)](https://github.com/AnshulMandekar)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Anshul%20Mandekar-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/anshul-mandekar-4b75b2292)
 [![LeetCode](https://img.shields.io/badge/LeetCode-200%2B%20Solved-FFA116?style=for-the-badge&logo=leetcode&logoColor=black)](https://leetcode.com/u/anshulmandekar21/)
