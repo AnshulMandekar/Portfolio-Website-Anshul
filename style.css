@@ -1032,64 +1032,433 @@ body.presentation-mode .slide-content {
 
 
 
-/* Responsive Styles */
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE STYLES — Mobile-First Multi-Breakpoint System
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tablet & Small Desktop (≤1024px) ── */
 @media (max-width: 1024px) {
-  .hero-layout, .about-layout, .project-detail-layout, .research-layout, .education-grid {
+  /* Collapse two-column grids */
+  .hero-layout,
+  .about-layout,
+  .project-detail-layout,
+  .research-layout,
+  .education-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
   }
-  
-  .hero-left h1 {
-    font-size: 3.5rem;
-  }
-  
+
+  /* Hero photo moves above text */
   .hero-right {
     order: -1;
   }
-  
+
+  .hero-left h1 {
+    font-size: 3.5rem;
+  }
+
   .profile-frame {
     width: 250px;
     height: 250px;
   }
-  
+
+  /* Slide padding */
   body.presentation-mode .slide {
-    padding: 3rem 2rem;
+    padding: 3rem 2.5rem;
   }
-  
+
   body.presentation-mode .slide-content {
-    max-height: 90vh;
+    max-height: 92vh;
+    overflow-y: auto;
   }
-  
+
+  /* Skills grid: collapse to 1-col */
   .skills-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
-  
+
+  /* Projects index: collapse to 2-col */
   .projects-index {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
   }
-  
+
   .project-idx-card {
     min-height: 200px;
   }
-  
+
+  /* Hide sidebar dots on tablet */
   .sidebar-dots {
     display: none;
   }
 }
 
+/* ── Mobile Landscape & Large Phones (≤768px) ── */
 @media (max-width: 768px) {
+  /* Slide padding */
+  body.presentation-mode .slide {
+    padding: 2rem 1.75rem;
+    padding-top: 4.5rem; /* account for fixed header */
+  }
+
+  body.presentation-mode .slide-content {
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  /* Typography scale-down */
   .hero-left h1 {
     font-size: 2.8rem;
   }
-  
-  .slide-header h2 {
-    font-size: 1.8rem;
+
+  .hero-subtitle {
+    font-size: 1.2rem;
   }
-  
+
+  .slide-header h2 {
+    font-size: 2rem;
+  }
+
+  /* Control bar */
   .control-bar {
     padding: 1rem 1.5rem;
   }
-  
+
+  .control-brand {
+    font-size: 1.1rem;
+  }
+
+  /* Projects index: 1-col on mobile */
+  .projects-index {
+    grid-template-columns: 1fr;
+  }
+
+  /* About metrics: keep 2-col but smaller */
+  .metric-num {
+    font-size: 2.2rem;
+  }
+
+  .metric-card {
+    padding: 1.5rem 1rem;
+  }
+
+  /* Job header stacks */
+  .job-header {
+    flex-direction: column;
+  }
+
+  .job-meta {
+    text-align: left;
+  }
+
+  /* Project detail visual: reduce aspect ratio height */
+  .project-visual {
+    aspect-ratio: 16/9;
+  }
+
+  /* Document mode padding */
+  body.document-mode .slide {
+    padding: 6rem 1.5rem;
+  }
+
+  /* Bottom controls — larger tap targets */
+  .pres-controls {
+    padding: 0.6rem 1.25rem;
+    gap: 1.25rem;
+    bottom: 1.25rem;
+  }
+
+  .pres-nav-btn {
+    font-size: 1.1rem;
+    padding: 0.5rem;
+  }
+}
+
+/* ── Mobile Portrait (≤480px) ── */
+@media (max-width: 480px) {
+  /* Slide padding — very compact */
+  body.presentation-mode .slide {
+    padding: 1.25rem;
+    padding-top: 4rem;
+  }
+
+  body.presentation-mode .slide-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Hero section */
+  .hero-left h1 {
+    font-size: 2.2rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-details {
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-direction: column;
+  }
+
+  .hero-socials {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .social-btn {
+    padding: 0.6rem 1.1rem;
+    font-size: 0.82rem;
+    gap: 0.5rem;
+  }
+
+  /* Profile photo */
+  .profile-frame {
+    width: 180px;
+    height: 180px;
+  }
+
+  /* Slide header */
+  .slide-header {
+    margin-bottom: 1.5rem;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .slide-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .slide-num {
+    font-size: 0.85rem;
+  }
+
+  /* About: single column metrics */
+  .about-right {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .metric-num {
+    font-size: 1.9rem;
+  }
+
+  .metric-title {
+    font-size: 0.78rem;
+  }
+
+  .metric-card {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .about-left .summary-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .about-left .summary-text p {
+    margin-bottom: 1rem;
+  }
+
+  /* Skills grid */
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .skill-category {
+    padding: 1.25rem;
+  }
+
+  .skill-category h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .skill-tag {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.7rem;
+  }
+
+  /* Work experience */
+  .job-title-group h3 {
+    font-size: 1.3rem;
+  }
+
+  .job-company {
+    font-size: 0.95rem;
+  }
+
+  .job-bullets li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Project index */
+  .projects-index {
+    gap: 1rem;
+  }
+
+  .project-idx-card {
+    min-height: unset;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .proj-idx-num {
+    font-size: 2rem;
+  }
+
+  .proj-idx-title h3 {
+    font-size: 1.15rem;
+  }
+
+  /* Project detail */
+  .project-info h3 {
+    font-size: 1.35rem;
+  }
+
+  .project-tagline {
+    font-size: 0.9rem;
+  }
+
+  .project-desc li {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .project-visual {
+    aspect-ratio: 4/3;
+  }
+
+  /* Research */
+  .paper-title {
+    font-size: 1.35rem;
+  }
+
+  .paper-bullets li {
+    font-size: 0.9rem;
+  }
+
+  /* Education */
+  .edu-degree {
+    font-size: 1.05rem;
+  }
+
+  .edu-school {
+    font-size: 0.9rem;
+  }
+
+  .certs-group h3,
+  .honors-group h3 {
+    font-size: 1rem;
+  }
+
+  .cert-item,
+  .honor-item {
+    font-size: 0.82rem;
+    padding: 0.75rem;
+  }
+
+  /* Bored slide */
+  .bored-text-content h3 {
+    font-size: 1.6rem;
+  }
+
+  .bored-description {
+    font-size: 0.92rem;
+  }
+
+  .bored-highlights {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .highlight-details h4 {
+    font-size: 0.95rem;
+  }
+
+  .highlight-details p {
+    font-size: 0.83rem;
+  }
+
+  .play-game-btn {
+    font-size: 0.95rem;
+    padding: 0.9rem 1.75rem;
+  }
+
+  /* Control bar brand */
+  .control-brand {
+    font-size: 1rem;
+  }
+
+  /* Bottom nav controls */
+  .pres-controls {
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+    bottom: 1rem;
+  }
+
+  .pres-counter {
+    font-size: 0.8rem;
+  }
+
+  /* Slider buttons — bigger touch targets */
+  .slider-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Document mode */
+  body.document-mode .slide {
+    padding: 5rem 1rem;
+  }
+}
+
+/* ── Very Small Phones (≤360px) ── */
+@media (max-width: 360px) {
+  body.presentation-mode .slide {
+    padding: 1rem;
+    padding-top: 3.75rem;
+  }
+
+  .hero-left h1 {
+    font-size: 1.85rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .slide-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .profile-frame {
+    width: 150px;
+    height: 150px;
+  }
+
+  .social-btn {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.78rem;
+  }
+
+  .metric-num {
+    font-size: 1.6rem;
+  }
+
+  /* Hide game console on very small phones to save space */
+  .bored-visual {
+    display: none;
+  }
+
+  .bored-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Project Image Slider Styles */
@@ -1653,31 +2022,36 @@ body.presentation-mode .slide-content {
   margin-top: 0.25rem;
 }
 
-/* Responsiveness for Slide 12 */
+/* Bored slide — collapse to 1-column on tablet and below */
 @media (max-width: 992px) {
   .bored-layout {
-    gap: 2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .bored-layout {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem;
     text-align: center;
   }
-  
+
   .bored-highlights {
     align-items: center;
   }
-  
+
   .bored-highlight-item {
     text-align: left;
-    max-width: 450px;
+    max-width: 500px;
     width: 100%;
   }
-  
-  body.document-mode .slide {
-    padding: 6rem 1.5rem;
+
+  .bored-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Scale down game console on tablet */
+  .game-console-card {
+    width: 260px;
+    height: 380px;
+  }
+
+  .console-screen {
+    height: 155px;
   }
 }

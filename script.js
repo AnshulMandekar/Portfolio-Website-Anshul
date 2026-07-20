@@ -175,6 +175,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Set initial UI state
   updateUI(activeIndex);
+
+  // ── Touch Swipe Support (Mobile) ──────────────────────────────
+  // Allows mobile users to swipe up/down to navigate slides.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const SWIPE_THRESHOLD = 50; // minimum px to count as a swipe
+
+  container.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  container.addEventListener('touchend', (e) => {
+    if (!isPresentationMode) return;
+
+    const deltaX = e.changedTouches[0].clientX - touchStartX;
+    const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+    // Only treat as vertical swipe if the vertical component dominates
+    if (Math.abs(deltaY) < SWIPE_THRESHOLD) return;
+    if (Math.abs(deltaX) > Math.abs(deltaY)) return;
+
+    if (deltaY < 0) {
+      // Swiped UP → go to next slide
+      if (activeIndex < totalSlides - 1) scrollToSlide(activeIndex + 1);
+    } else {
+      // Swiped DOWN → go to previous slide
+      if (activeIndex > 0) scrollToSlide(activeIndex - 1);
+    }
+  }, { passive: true });
+  // ──────────────────────────────────────────────────────────────
 });
 
 // Project Image Slider Logic (Multi-image support)
