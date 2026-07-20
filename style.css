@@ -442,15 +442,7 @@ body.document-mode .slide {
   overflow: hidden;
 }
 
-.job-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background-color: var(--text-primary);
-}
+
 
 .job-header {
   display: flex;
