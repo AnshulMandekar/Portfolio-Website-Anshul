@@ -282,7 +282,7 @@
   <!-- Top Bar -->
   <div id="top-bar">
     <div class="brand" id="brand">ANSHUL'S <span>WORLD</span></div>
-    <a href="anshul.html" id="back-btn">← Back to Portfolio</a>
+    <a href="index.html" id="back-btn">← Back to Portfolio</a>
   </div>
 
   <!-- Zone Labels -->
@@ -362,7 +362,7 @@
       subtitle:'Full-Stack Developer & AI Researcher  ·  Pune, India',
       body:'Results-driven CSE student with hands-on production experience building multi-agent LLM systems, deep learning pipelines, and highly scalable cloud applications. Recognized with 1st Rank at the Industry Conclave 2026, SIT Pune.',
       tags:['Full-Stack','AI Research','Cloud Architecture','SIT Pune','🏆 1st Rank'],
-      ctas:[{label:'View Full Portfolio',href:'anshul.html'}]
+      ctas:[{label:'View Full Portfolio',href:'index.html'}]
     },
     {
       id:'xp',      label:'Experience',  icon:'⬡', pos:[-13,0],    col:0xff8c42, em:0xb05218,
@@ -388,11 +388,15 @@
       id:'projects', label:'Projects',   icon:'⬤', pos:[0,13],     col:0xff6b6b, em:0xb02828,
       camTh:-0.2, camPh:0.72, camR:16,
       section:'Technical Projects',
-      title:'4 Major Projects',
-      subtitle:'FinVeritas  ·  Microplastics  ·  Network IDS  ·  ISKCON Memorial',
-      body:'FinVeritas: 7-agent LLM system (LangGraph) winning 1st Rank at Industry Conclave. Microplastic Detection: 92.7% mAP@0.5 using YOLOv8/v9 + GAN augmentation. Network IDS CNN: 95%+ accuracy on CICIDS2017. ISKCON Memorial: Full-stack MERN platform with 90+ Google PageSpeed score.',
-      tags:['LangGraph','YOLOv8','CNN','React.js','MongoDB','🏆 1st Rank'],
-      ctas:[{label:'FinVeritas Live',href:'https://finveritas.streamlit.app/'},{label:'ISKCON Live',href:'https://devotee-memorial-ten.vercel.app/'}]
+      title:'5 Major Projects',
+      subtitle:'FinVeritas  ·  Microplastics  ·  Network IDS  ·  ISKCON Memorial  ·  TaskFlow',
+      body:'FinVeritas: 7-agent LLM system (LangGraph) winning 1st Rank at Industry Conclave. Microplastics: YOLOv8/v9 + GAN detection. Network IDS: CNN. ISKCON Memorial: Full-stack MERN platform. TaskFlow: MERN + FastAPI (Gemini) AI task manager.',
+      tags:['LangGraph','YOLOv8','React.js','MongoDB','FastAPI','Gemini AI'],
+      ctas:[
+        {label:'FinVeritas Live',href:'https://finveritas.streamlit.app/'},
+        {label:'ISKCON Live',href:'https://devotee-memorial-ten.vercel.app/'},
+        {label:'TaskFlow Live',href:'https://taskmanager-client-dfn8.onrender.com'}
+      ]
     },
     {
       id:'research', label:'Research',   icon:'✧', pos:[13,0],     col:0xffe66d, em:0xa09000,
@@ -937,10 +941,11 @@
     grp.position.set(x, y, zz);
 
     const bData = [
-      { p:[-2.3,0,-1.5], col:0xff6b6b, em:0x991a1a, w:1.9,h:3.8, d:1.5, label:'FinVeritas' },
-      { p:[ 2.3,0,-1.5], col:0xfeca57, em:0x906a00, w:1.7,h:3.0, d:1.4, label:'Microplastics' },
-      { p:[-2.3,0, 1.5], col:0x48dbfb, em:0x0a88aa, w:1.7,h:2.4, d:1.4, label:'IDS CNN' },
-      { p:[ 2.3,0, 1.5], col:0xff9ff3, em:0x883388, w:1.9,h:3.3, d:1.5, label:'ISKCON' },
+      { p:[-2.3,0,-1.8], col:0xff6b6b, em:0x991a1a, w:1.9,h:3.8, d:1.5, label:'FinVeritas' },
+      { p:[ 2.3,0,-1.8], col:0xfeca57, em:0x906a00, w:1.7,h:3.0, d:1.4, label:'Microplastics' },
+      { p:[ 2.3,0, 0.0], col:0x7c83e8, em:0x3b44b0, w:1.8,h:3.5, d:1.4, label:'TaskFlow' },
+      { p:[-2.3,0, 1.8], col:0x48dbfb, em:0x0a88aa, w:1.7,h:2.4, d:1.4, label:'IDS CNN' },
+      { p:[ 2.3,0, 1.8], col:0xff9ff3, em:0x883388, w:1.9,h:3.3, d:1.5, label:'ISKCON' },
     ];
 
     let mainB = null;
