@@ -27,7 +27,7 @@ No frameworks, no build tools — **100% vanilla HTML, CSS, and JavaScript**.
 ```
 portfolio_website/
 │
-├── index.html          # Main portfolio — 12-slide presentation
+├── index.html          # Main portfolio — 14-slide presentation
 ├── game.html           # 3D interactive portfolio game (WebGL)
 ├── style.css           # Complete design system & all component styles
 ├── script.js           # Presentation controller, navigation, slider logic
@@ -46,6 +46,9 @@ portfolio_website/
     ├── microplastics.jpg     # YOLO microplastic detection visual
     ├── network_ids.jpg       # Network IDS CNN illustration
     ├── iskcon_memorial.png   # ISKCON memorial platform visual
+    ├── TaskManager1.png      # TaskFlow dashboard visual
+    ├── TaskManager2.png      # TaskFlow AI chat visual
+    ├── Lecture_notes.png     # LectureNotes AI lecture notes & concept maps visual
     └── urban_mobility.png    # Urban GAN research visualization
 ```
 
@@ -53,7 +56,7 @@ portfolio_website/
 
 ## 🖥️ Main Portfolio (`index.html`)
 
-The main portfolio is a **full-screen, vertical slide-based presentation** — similar to PowerPoint but in the browser. It has **12 slides**, each covering a distinct section of the resume.
+The main portfolio is a **full-screen, vertical slide-based presentation** — similar to PowerPoint but in the browser. It has **14 slides**, each covering a distinct section of the resume.
 
 ### Navigation
 | Method | Action |
@@ -75,14 +78,16 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 | 02 | **About Me** | Professional summary with 4 metric cards: 1st Rank at Industry Conclave 2026, 20K+ Active Users Supported, 95%+ ML Detection Accuracy, 10⁻⁷ KL Divergence on Urban GAN. |
 | 03 | **Technical Summary** | Skill tags grouped into 4 categories: Languages & Core, Web & Cloud Infrastructure, AI / Machine Learning, Developer Tools & Systems. |
 | 04 | **Work Experience** | Software Development Intern at **Yellow Cube** (Jan–Jul 2025, Navi Mumbai). Covers AWS cloud infra, real-time WebSocket scheduling, IAM security config. Includes an image carousel of 4 CRM screenshots and a link to a demo video. |
-| 05 | **Projects Index** | A card-based index of all 4 projects with short descriptions and deep-link navigation buttons. |
+| 05 | **Projects Index** | A card-based index of all 6 projects with short descriptions and deep-link navigation buttons. |
 | 06 | **Project 01 — Financial RAG System** | Explainable financial background review pipeline using LangGraph multi-agent LLMs, RAG, and ChromaDB vector store. Includes image gallery slider. |
 | 07 | **Project 02 — Microplastic Detection** | YOLO-based computer vision pipeline (YOLOv8/v9) with TensorRT inference acceleration and Conditional WGAN-GP synthetic data augmentation. |
 | 08 | **Project 03 — Network IDS CNN** | 1D-to-2D feature transformation + CNN for network intrusion detection with 95%+ accuracy and XAI explainability. |
 | 09 | **Project 04 — ISKCON Devotee Memorial** | Full-stack MERN platform for digitally preserving ISKCON devotees. 3-tier moderation, JWT auth, Cloudinary CDN, 90+ PageSpeed score. Live site linked. |
-| 10 | **Research & Publications** | SCI-published paper on *Generative Adversarial Networks in Urban Digital Twins* (2026). Conditional WGAN-GP — KL Divergence of 9.78×10⁻⁷, outperforming VAE baselines. |
-| 11 | **Education & Credentials** | B.Tech CSE at SIT Pune (2023–2027, CGPA 7.45), Class XII & X (CBSE). Certifications: NCA, Full Stack Gen AI, ML A-Z. Honors: 2x SIH Qualifier, Deloitte Hacksplosion L2, 200+ LeetCode problems. |
-| 12 | **Bored of Reading?** | Invitation to launch the 3D portfolio game, with feature highlights and a "Launch 3D World" button. Features a retro game console UI card. |
+| 10 | **Project 05 — TaskFlow AI Task Manager** | AI-powered task manager with React client, Express gateway, and Python FastAPI service using Gemini 3.5 Flash for multimodal syllabus parsing and context-aware chat. |
+| 11 | **Project 06 — LectureNotes AI** | Full-stack AI application powered by FastAPI, Google Gemini 2.5 Flash, MongoDB Atlas, and Mermaid.js for YouTube lecture synthesis, timestamp-synced playback, and dynamic concept maps. |
+| 12 | **Research & Publications** | SCI-published paper on *Generative Adversarial Networks in Urban Digital Twins* (2026). Conditional WGAN-GP — KL Divergence of 9.78×10⁻⁷, outperforming VAE baselines. |
+| 13 | **Education & Credentials** | B.Tech CSE at SIT Pune (2023–2027, CGPA 7.45), Class XII & X (CBSE). Certifications: NCA, Full Stack Gen AI, ML A-Z. Honors: 2x SIH Qualifier, Deloitte Hacksplosion L2, 200+ LeetCode problems. |
+| 14 | **Bored of Reading?** | Invitation to launch the 3D portfolio game, with feature highlights and a "Launch 3D World" button. Features a retro game console UI card. |
 
 ---
 
