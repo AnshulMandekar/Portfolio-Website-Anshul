@@ -25,8 +25,8 @@ pipeline {
         )
         string(
             name: 'HOST_PORT',
-            defaultValue: '8080',
-            description: 'Host port to map and expose the website container'
+            defaultValue: '8081',
+            description: 'Host port to map and expose the website container (avoid 8080 if Jenkins uses it)'
         )
     }
 
