@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: portfolio-service
+  labels:
+    app: portfolio-website
+spec:
+  type: NodePort # Use LoadBalancer if on AWS EKS / GCP GKE / Azure AKS
+  selector:
+    app: portfolio-website
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      nodePort: 30080
