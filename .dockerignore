@@ -1,0 +1,10 @@
+.git
+.gitignore
+.github
+.agents
+.vscode
+.idea
+Jenkinsfile
+Dockerfile
+.dockerignore
+README.md
