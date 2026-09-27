@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Anshul's World — 3D Interactive Portfolio</title>
   <meta name="description" content="Explore Anshul Mandekar's portfolio as a playable 3D island. Walk the districts, collect skill orbs, and race the clock.">
+  <meta name="theme-color" content="#05050f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Anshul's World — play my portfolio as a 3D game">
+  <meta property="og:description" content="Walk a low-poly island built from my resume: explore six districts, collect 18 skill orbs and beat the clock.">
+  <meta property="og:url" content="https://portfolio-website-anshul-1.onrender.com/game.html">
+  <meta property="og:image" content="https://portfolio-website-anshul-1.onrender.com/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://portfolio-website-anshul-1.onrender.com/assets/og-image.png">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -469,6 +482,60 @@
 
     #flash { position: fixed; inset: 0; z-index: 350; background: #fff; opacity: 0; pointer-events: none; }
 
+    /* ═══ HINT BUTTON & GUIDE BUBBLE ═══ */
+    .hud-hint {
+      width: 100%; margin-top: 0.2rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+      padding: 0.45rem 0.6rem; border-radius: 10px;
+      background: rgba(255,230,109,0.1); border: 1px solid rgba(255,230,109,0.25);
+      font-size: 0.74rem; font-weight: 600; color: #ffe66d;
+      transition: background 0.2s;
+    }
+    .hud-hint:hover { background: rgba(255,230,109,0.18); }
+    .hud-hint kbd { height: 17px; min-width: 17px; font-size: 0.58rem; }
+    #guide-bubble {
+      position: fixed; left: 0; top: 0; z-index: 105;
+      max-width: 260px; padding: 0.6rem 0.8rem; border-radius: 14px 14px 14px 4px;
+      background: rgba(8,10,28,0.88); border: 1px solid rgba(78,205,196,0.45);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 18px rgba(78,205,196,0.18);
+      font-size: 0.8rem; line-height: 1.45; color: rgba(255,255,255,0.9);
+      opacity: 0; pointer-events: none; transition: opacity 0.35s;
+      will-change: transform;
+    }
+    #guide-bubble.on { opacity: 1; }
+    #guide-bubble b { display: block; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: #4ecdc4; margin-bottom: 0.15rem; }
+
+    /* ═══ SETTINGS ═══ */
+    .set-rows { display: flex; flex-direction: column; gap: 0.7rem; text-align: left; }
+    .set-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0.75rem 0.9rem; border-radius: 12px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    }
+    .set-row b { display: block; font-size: 0.9rem; }
+    .set-row small { display: block; font-size: 0.72rem; color: var(--text-dim); margin-top: 0.1rem; }
+    .seg { display: inline-flex; flex-shrink: 0; padding: 3px; border-radius: 20px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+    .seg button {
+      border: none; background: none; padding: 0.35rem 0.8rem; border-radius: 16px;
+      font-size: 0.76rem; font-weight: 600; color: var(--text-dim); white-space: nowrap;
+      transition: background 0.2s, color 0.2s;
+    }
+    .seg button.on { background: #fff; color: #05050f; }
+    .set-foot { margin-top: 1.1rem; text-align: center; }
+    .link-btn { background: none; border: none; color: var(--text-dim); font-size: 0.78rem; text-decoration: underline; text-underline-offset: 3px; }
+    .link-btn:hover { color: #fff; }
+
+    /* ═══ START: saved run ═══ */
+    .st-save { margin: -0.7rem 0 1.3rem; font-size: 0.78rem; color: var(--text-dim); }
+    .st-save:empty { display: none; }
+
+    /* ═══ PANEL: project cards that open a building ═══ */
+    .p-item[role="button"] { cursor: none; }
+    body.touch .p-item[role="button"] { cursor: pointer; }
+    .p-item-seen { margin-left: auto; font-size: 0.65rem; color: #3ddc97; font-weight: 700; letter-spacing: 0.06em; }
+    .p-note { font-size: 0.78rem; color: var(--text-dim); margin: -0.4rem 0 1rem; }
+
     /* ═══ TOUCH CONTROLS ═══ */
     #joy {
       position: fixed; left: 1.4rem; bottom: 1.6rem; z-index: 130;
@@ -517,6 +584,8 @@
       #prompt { bottom: 11rem; }
       body.touch #prompt { bottom: 15rem; }
       #toasts { top: 12rem; }
+      #guide-bubble { max-width: 200px; font-size: 0.74rem; }
+      .set-row { flex-direction: column; align-items: flex-start; }
       .card { padding: 2rem 1.3rem 1.6rem; }
       #top-bar { padding: 0.85rem 1rem; }
       .brand { font-size: 0.8rem; }
@@ -567,6 +636,7 @@
       <div class="hud-stat-row"><span>◆ Skill orbs</span><b id="hud-o">0/18</b></div>
       <div class="hud-bar orbs"><i id="hud-o-bar"></i></div>
     </div>
+    <button class="hud-hint" id="hud-hint" type="button">💡 Ask Byte for a hint <kbd class="desk-only">G</kbd></button>
     <ul id="hud-list"></ul>
     <div class="hud-tip desk-only">Click a district to travel there. Timer pauses while you read.</div>
     <div class="hud-tip touch-only">Tap a district to travel there. Timer pauses while you read.</div>
@@ -578,12 +648,16 @@
   <!-- Toasts -->
   <div id="toasts" aria-live="polite"></div>
 
+  <!-- Guide companion speech bubble -->
+  <div id="guide-bubble" role="status" aria-live="polite"><b>Byte</b><span id="guide-text"></span></div>
+
   <!-- Minimap -->
   <canvas id="minimap" aria-hidden="true"></canvas>
 
   <!-- Dock -->
   <div id="dock">
     <button class="dock-btn" id="mode-btn" type="button"><span id="mode-ico">🗺️</span><span class="lbl" id="mode-lbl">Map view</span><kbd class="desk-only">M</kbd></button>
+    <button class="dock-btn icon" id="settings-btn" type="button" aria-label="Settings">⚙️</button>
     <button class="dock-btn icon" id="help-btn" type="button" aria-label="Controls help">?</button>
     <button class="dock-btn icon" id="sound-btn" type="button" aria-label="Toggle sound">🔇</button>
   </div>
@@ -613,9 +687,11 @@
         <span class="st-goal">⏱ Beat your best time</span>
       </div>
       <div class="st-btns">
+        <button class="st-btn primary" id="st-continue" type="button" hidden>▶ Continue</button>
         <button class="st-btn primary" id="st-play" type="button">▶ Start exploring</button>
         <button class="st-btn" id="st-tour" type="button">🗺️ Quick tour</button>
       </div>
+      <div class="st-save" id="st-save"></div>
       <div class="keys-grid desk-only">
         <div class="key-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Move</span></div>
         <div class="key-row"><kbd>Shift</kbd><span>Sprint</span></div>
@@ -650,6 +726,8 @@
         <div class="key-row"><kbd>Drag</kbd><span>Rotate camera</span></div>
         <div class="key-row"><kbd>Scroll</kbd><span>Zoom</span></div>
         <div class="key-row"><kbd>Esc</kbd><span>Close panel</span></div>
+        <div class="key-row"><kbd>G</kbd><span>Ask Byte for a hint</span></div>
+        <div class="key-row"><kbd>N</kbd><span>Day / night</span></div>
       </div>
       <div class="keys-grid touch-only">
         <div class="key-row">🕹️<span>Left stick to move (push hard to sprint)</span></div>
@@ -661,6 +739,9 @@
         <li>Walk up to a district and explore it to learn about that part of my work.</li>
         <li>Some orbs float high — jump to grab them. Light beams show where they are.</li>
         <li>The minimap shows every remaining orb and which districts you've found.</li>
+        <li>In the Projects district, walk up to a building to open that project's full story.</li>
+        <li>🎮 Controllers work too: left stick moves, right stick looks, A jumps, X explores, Y asks for a hint, Start opens the map.</li>
+        <li>Your progress is saved on this device — pick up where you left off next time.</li>
       </ul>
     </div>
   </div>
@@ -682,6 +763,38 @@
         <button id="done-free" type="button">Keep exploring</button>
         <a href="index.html">← Portfolio</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="overlay" id="settings" role="dialog" aria-label="Settings">
+    <div class="card">
+      <button class="card-close" id="settings-close" type="button" aria-label="Close">✕</button>
+      <div class="st-kicker">Settings</div>
+      <h2 class="help-title">Game settings</h2>
+      <div class="set-rows">
+        <div class="set-row">
+          <div><b>Time of day</b><small class="desk-only">Shortcut: N</small></div>
+          <div class="seg" data-setting="time"><button type="button" data-value="day">☀️ Day</button><button type="button" data-value="night">🌙 Night</button></div>
+        </div>
+        <div class="set-row">
+          <div><b>Graphics</b><small>Low turns off shadows and extra particles</small></div>
+          <div class="seg" data-setting="quality"><button type="button" data-value="high">High</button><button type="button" data-value="low">Low</button></div>
+        </div>
+        <div class="set-row">
+          <div><b>Music</b><small>Ambient soundtrack — plays while sound is on</small></div>
+          <div class="seg" data-setting="music"><button type="button" data-value="on">On</button><button type="button" data-value="off">Off</button></div>
+        </div>
+        <div class="set-row">
+          <div><b>Sound effects</b><small>Jumps, orbs and discoveries</small></div>
+          <div class="seg" data-setting="sfx"><button type="button" data-value="on">On</button><button type="button" data-value="off">Off</button></div>
+        </div>
+        <div class="set-row">
+          <div><b>Guide hints</b><small>Byte offers a tip when you seem stuck</small></div>
+          <div class="seg" data-setting="guide"><button type="button" data-value="on">On</button><button type="button" data-value="off">Off</button></div>
+        </div>
+      </div>
+      <div class="set-foot"><button class="link-btn" id="set-reset" type="button">Reset saved progress &amp; best time</button></div>
     </div>
   </div>
 
@@ -785,24 +898,24 @@
       camTh:-0.2, camPh:0.72, camR:16,
       section:'Technical Projects',
       title:'6 Major Projects',
-      subtitle:'One building per project — each one is live below where available.',
+      subtitle:'One building per project — walk up to a building to open its full story.',
       items:[
-        { name:'FinVeritas — Financial Review System', col:0xff6b6b,
+        { key:'finveritas', name:'FinVeritas — Financial Review System', col:0xff6b6b,
           desc:'7-agent LangGraph system with RAG over Bloomberg PDFs of Fortune 500 companies. 1st Rank at the PBL-2 Industry Conclave 2026.',
           tech:'LangGraph · RAG · ChromaDB · AWS EC2', links:[{label:'Live app ↗', href:'https://finveritas.streamlit.app/'}] },
-        { name:'Microplastic Detection', col:0xfeca57,
+        { key:'microplastics', name:'Microplastic Detection', col:0xfeca57,
           desc:'YOLOv8/v9 detector for 5 microplastic classes — 92.7% mAP@0.5 on a GAN-augmented dataset of 1,900+ images.',
           tech:'YOLOv8/v9 · TensorRT · GANs · Streamlit', links:[] },
-        { name:'Network Intrusion Detection (CNN)', col:0x48dbfb,
+        { key:'intrusion-detection', name:'Network Intrusion Detection (CNN)', col:0x48dbfb,
           desc:'1D-to-2D feature transform + CNN on CICIDS2017 (500K+ records) — 95%+ accuracy across 12 attack classes.',
           tech:'CNN · TensorRT · NumPy / Pandas', links:[] },
-        { name:'ISKCON Devotee Memorial', col:0xff9ff3,
+        { key:'iskcon-memorial', name:'ISKCON Devotee Memorial', col:0xff9ff3,
           desc:'Full-stack MERN platform with 10+ REST APIs, JWT auth, a 3-tier moderation workflow and a 90+ PageSpeed score.',
           tech:'React · Node · MongoDB · Cloudinary', links:[{label:'Live site ↗', href:'https://devotee-memorial-ten.vercel.app/'}] },
-        { name:'TaskFlow — AI Task Manager', col:0x7c83e8,
+        { key:'taskflow', name:'TaskFlow — AI Task Manager', col:0x7c83e8,
           desc:'Mobile-first task manager: React + Express + a FastAPI microservice using Gemini for multimodal task extraction and an AI chat assistant.',
           tech:'MERN · FastAPI · Gemini · PWA', links:[{label:'Live app ↗', href:'https://taskmanager-client-dfn8.onrender.com'}] },
-        { name:'LectureNotes AI', col:0x46e3b7,
+        { key:'lecturenotes', name:'LectureNotes AI', col:0x46e3b7,
           desc:'Turns long YouTube lectures into hierarchical notes and interactive Mermaid.js concept maps with Gemini 2.5 Flash.',
           tech:'FastAPI · Gemini 2.5 · MongoDB Atlas', links:[{label:'Live demo ↗', href:'https://lecturenotes-frontend.onrender.com'},{label:'GitHub ↗', href:'https://github.com/AnshulMandekar/YoutubeVideo-to-Transcript'}] }
       ],
@@ -935,13 +1048,36 @@
   // Sound
   let soundOn = false, audioCtx = null;
 
+  // Saved settings (per device)
+  const SETTINGS_KEY = 'anshulsWorld.settings';
+  const settings = Object.assign(
+    { time: 'day', quality: isTouch ? 'low' : 'high', music: true, sfx: true, guide: true },
+    loadJSON(SETTINGS_KEY) || {}
+  );
+  function saveSettings() { saveJSON(SETTINGS_KEY, settings); }
+
   // Game progress
   const BEST_KEY = 'anshulsWorld.bestTime';
+  const SAVE_KEY = 'anshulsWorld.save';
   const game = {
     started: false, time: 0, complete: false,
-    discovered: ZONES.map(() => false), collected: 0,
-    best: loadBest(), toldZones: false, toldOrbs: false, toldJump: false
+    discovered: ZONES.map(() => false), collected: 0, projectsSeen: new Set(),
+    best: loadBest(), toldZones: false, toldOrbs: false, toldJump: false,
+    lastProgressAt: 0
   };
+
+  // Day / night blend (0 = day, 1 = night) and the scene pieces it drives
+  const env = { night: settings.time === 'night' ? 1 : 0, target: settings.time === 'night' ? 1 : 0 };
+  const lights = { amb: null, hemi: null, sun: null, fill: null, moon: null, zone: [], player: null };
+  const glowMats = [];        // emissive windows / lanterns that brighten at night
+  let skyUniforms = null, waterUniforms = null;
+
+  // Project buildings in the Projects district (front door positions)
+  const projectSpots = [];
+  let nearProj = null, panelProj = null;
+
+  // Gamepad state
+  const pad = { axes: [0, 0, 0, 0], sprint: false, prev: [] };
 
   // Player
   const player = {
@@ -961,6 +1097,9 @@
 
   function loadBest() { try { return parseFloat(localStorage.getItem(BEST_KEY)) || 0; } catch (e) { return 0; } }
   function saveBest(t) { try { localStorage.setItem(BEST_KEY, String(t)); } catch (e) {} }
+  function loadJSON(key) { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } }
+  function saveJSON(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} }
+  function registerGlow(mat) { glowMats.push({ mat, base: mat.emissiveIntensity }); return mat; }
 
   // ──────────────────── INIT ────────────────────
   function init() {
@@ -992,7 +1131,8 @@
         uTime: uTime,
         uTop: { value: new THREE.Color(0x08123a) },
         uMid: { value: new THREE.Color(0x1a4080) },
-        uBot: { value: new THREE.Color(0x3a7ab8) }
+        uBot: { value: new THREE.Color(0x3a7ab8) },
+        uNight: { value: env.night }
       },
       vertexShader: `
         varying vec3 vWP;
@@ -1002,30 +1142,39 @@
         }`,
       fragmentShader: `
         uniform vec3 uTop,uMid,uBot;
-        uniform float uTime;
+        uniform float uTime, uNight;
         varying vec3 vWP;
         void main(){
-          float h=normalize(vWP).y;
+          vec3 dir=normalize(vWP);
+          float h=dir.y;
           float t=max(h,0.0);
           float cycle=sin(uTime*0.06)*0.5+0.5;
-          vec3 col=mix(uBot,uMid,t);
-          col=mix(col,uTop,t*t);
+          vec3 top=mix(uTop,vec3(0.010,0.014,0.045),uNight);
+          vec3 mid=mix(uMid,vec3(0.025,0.045,0.12),uNight);
+          vec3 bot=mix(uBot,vec3(0.05,0.09,0.20),uNight);
+          vec3 col=mix(bot,mid,t);
+          col=mix(col,top,t*t);
           col+=cycle*0.04*(1.0-t);
-          // Stars
-          float star=step(0.998,fract(sin(dot(normalize(vWP),vec3(12.9898,78.233,45.164)))*43758.5453));
-          col+=star*max(h,0.0)*0.9;
+          // Stars (brighter at night)
+          float star=step(0.998,fract(sin(dot(dir,vec3(12.9898,78.233,45.164)))*43758.5453));
+          col+=star*t*mix(0.45,1.1,uNight);
+          // Moon with a soft halo at night
+          float m=max(dot(dir,normalize(vec3(-0.55,0.5,-0.45))),0.0);
+          col+=uNight*(pow(m,900.0)*vec3(1.4,1.45,1.5)+pow(m,30.0)*vec3(0.06,0.08,0.14));
           gl_FragColor=vec4(col,1.0);
         }`
     });
+    skyUniforms = mat.uniforms;
     scene.add(new THREE.Mesh(geo, mat));
   }
 
   // ──────────────────── LIGHTS ────────────────────
   function makeLights() {
-    scene.add(new THREE.AmbientLight(0xc8d8f0, 0.25));
-    scene.add(new THREE.HemisphereLight(0xbfd6ff, 0x2f4a24, 0.4));
+    lights.amb = new THREE.AmbientLight(0xc8d8f0, 0.25);
+    lights.hemi = new THREE.HemisphereLight(0xbfd6ff, 0x2f4a24, 0.4);
+    scene.add(lights.amb, lights.hemi);
 
-    const sun = new THREE.DirectionalLight(0xfff4e0, 1.75);
+    const sun = lights.sun = new THREE.DirectionalLight(0xfff4e0, 1.75);
     sun.position.set(30, 55, 20);
     sun.castShadow = true;
     const sm = isTouch ? 1024 : 2048;
@@ -1037,7 +1186,7 @@
     scene.add(sun);
 
     // Soft fill from opposite
-    const fill = new THREE.DirectionalLight(0x88aaee, 0.35);
+    const fill = lights.fill = new THREE.DirectionalLight(0x88aaee, 0.35);
     fill.position.set(-20, -15, -20);
     scene.add(fill);
 
@@ -1046,10 +1195,11 @@
       const pl = new THREE.PointLight(z.col, 1.1, 11, 2);
       pl.position.set(z.pos[0], terrH(z.pos[0], z.pos[1]) + 3.2, z.pos[1]);
       scene.add(pl);
+      lights.zone.push(pl);
     });
 
     // Moonlight
-    const moon = new THREE.PointLight(0x8899dd, 0.8, 200);
+    const moon = lights.moon = new THREE.PointLight(0x8899dd, 0.8, 200);
     moon.position.set(-60, 80, -40);
     scene.add(moon);
   }
@@ -1059,7 +1209,7 @@
     const geo = new THREE.PlaneGeometry(600, 600, 64, 64);
     const mat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false,
-      uniforms: { uTime },
+      uniforms: { uTime, uNight: { value: env.night } },
       vertexShader:`
         uniform float uTime;
         varying vec2 vUv;
@@ -1074,7 +1224,7 @@
           gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);
         }`,
       fragmentShader:`
-        uniform float uTime;
+        uniform float uTime, uNight;
         varying vec2 vUv;
         varying float vH;
         void main(){
@@ -1090,9 +1240,11 @@
           float d=length(vUv-0.5)*600.0;
           float foam=smoothstep(3.0,0.0,abs(d-25.3+sin(uTime*1.3+vUv.x*40.0)*0.5));
           col=mix(col,vec3(0.85,0.93,1.0),foam*0.55);
+          col*=mix(1.0,0.42,uNight);
           gl_FragColor=vec4(col,0.87);
         }`
     });
+    waterUniforms = mat.uniforms;
     const water = new THREE.Mesh(geo, mat);
     water.rotation.x = -Math.PI/2;
     water.position.y = -2.8;
@@ -1349,7 +1501,7 @@
 
     const wallM = new THREE.MeshStandardMaterial({ color:0xd4b896, roughness:0.85 });
     const roofM = new THREE.MeshStandardMaterial({ color:0x8a3a18, roughness:0.9 });
-    const winM  = new THREE.MeshStandardMaterial({ color:0x88ccff, emissive:0x2266aa, emissiveIntensity:0.4, roughness:0.1 });
+    const winM  = registerGlow(new THREE.MeshStandardMaterial({ color:0x88ccff, emissive:0x2266aa, emissiveIntensity:0.4, roughness:0.1 }));
 
     // Main building
     const bldG = new THREE.BoxGeometry(3.8, 2.4, 2.4);
@@ -1403,7 +1555,7 @@
     grp.add(trainGrp);
 
     // Lanterns
-    const lanM = new THREE.MeshStandardMaterial({ color:0xffaa22, emissive:0xffaa22, emissiveIntensity:1.2 });
+    const lanM = registerGlow(new THREE.MeshStandardMaterial({ color:0xffaa22, emissive:0xffaa22, emissiveIntensity:1.2 }));
     const poleM= new THREE.MeshStandardMaterial({ color:0x444444, metalness:0.7 });
     for (const lx of [-2.4, 2.4]) {
       const lantern = new THREE.Mesh(new THREE.SphereGeometry(0.14,8,8), lanM);
@@ -1475,16 +1627,16 @@
     grp.position.set(x, y, zz);
 
     const bData = [
-      { p:[-2.3,0,-1.8], col:0xff6b6b, em:0x991a1a, w:1.9,h:3.8, d:1.5, label:'FinVeritas' },
-      { p:[ 2.3,0,-1.8], col:0xfeca57, em:0x906a00, w:1.7,h:3.0, d:1.4, label:'Microplastics' },
-      { p:[ 2.3,0, 0.0], col:0x7c83e8, em:0x3b44b0, w:1.8,h:3.5, d:1.4, label:'TaskFlow' },
-      { p:[-2.3,0, 0.0], col:0x46e3b7, em:0x1b8764, w:1.8,h:3.6, d:1.4, label:'LectureNotes' },
-      { p:[-2.3,0, 1.8], col:0x48dbfb, em:0x0a88aa, w:1.7,h:2.4, d:1.4, label:'IDS CNN' },
-      { p:[ 2.3,0, 1.8], col:0xff9ff3, em:0x883388, w:1.9,h:3.3, d:1.5, label:'ISKCON' },
+      { p:[-2.3,0,-1.8], col:0xff6b6b, em:0x991a1a, w:1.9,h:3.8, d:1.5, label:'FinVeritas',    key:'finveritas' },
+      { p:[ 2.3,0,-1.8], col:0xfeca57, em:0x906a00, w:1.7,h:3.0, d:1.4, label:'Microplastics', key:'microplastics' },
+      { p:[ 2.3,0, 0.0], col:0x7c83e8, em:0x3b44b0, w:1.8,h:3.5, d:1.4, label:'TaskFlow',      key:'taskflow' },
+      { p:[-2.3,0, 0.0], col:0x46e3b7, em:0x1b8764, w:1.8,h:3.6, d:1.4, label:'LectureNotes',  key:'lecturenotes' },
+      { p:[-2.3,0, 1.8], col:0x48dbfb, em:0x0a88aa, w:1.7,h:2.4, d:1.4, label:'IDS CNN',       key:'intrusion-detection' },
+      { p:[ 2.3,0, 1.8], col:0xff9ff3, em:0x883388, w:1.9,h:3.3, d:1.5, label:'ISKCON',        key:'iskcon-memorial' },
     ];
 
     const rM = new THREE.MeshStandardMaterial({ color:0x111111, roughness:0.9 });
-    const wM = new THREE.MeshStandardMaterial({ color:0xaaddff, emissive:0x3388bb, emissiveIntensity:0.55, roughness:0.1 });
+    const wM = registerGlow(new THREE.MeshStandardMaterial({ color:0xaaddff, emissive:0x3388bb, emissiveIntensity:0.55, roughness:0.1 }));
     let mainB = null;
     bData.forEach((b, i) => {
       const bodyM = new THREE.MeshStandardMaterial({ color:b.col, emissive:b.em, emissiveIntensity:0.12, roughness:0.6, metalness:0.2 });
@@ -1506,10 +1658,18 @@
       }
 
       colliders.push({ t:'b', x:x+b.p[0], z:zz+b.p[2], hw:b.w/2 + 0.09, hd:b.d/2 + 0.09 });
-      if (i===0) {
-        mainB = body;
-        body.userData.zoneIndex=3; body.userData.isZone=true; hitList.push(body);
-      }
+      if (i===0) mainB = body;
+      body.userData.zoneIndex=3; body.userData.isZone=true; body.userData.project=b.key;
+      hitList.push(body);
+
+      // Name sign floating above the roof
+      const sign = makeTextSprite(b.label, b.col);
+      sign.position.set(b.p[0], b.h + 0.75, b.p[2]);
+      grp.add(sign);
+
+      // Where the player stands to "enter" this building (street side)
+      projectSpots.push({ key:b.key, label:b.label, col:b.col,
+                          x: x + b.p[0] + face*(b.w/2 + 0.8), z: zz + b.p[2] });
     });
 
     // Road
@@ -1527,6 +1687,31 @@
     addZoneCollider(grp, 3, 3.8, 4.5);
     scene.add(grp);
     zoneObjs.push({ grp, main:mainB, basePY:bData[0].h/2 });
+  }
+
+  // Canvas-texture label used for the project building signs
+  function makeTextSprite(text, colHex) {
+    const cv = document.createElement('canvas');
+    const W = 512, H = 128;
+    cv.width = W; cv.height = H;
+    const g = cv.getContext('2d');
+    g.font = '700 54px Outfit, sans-serif';
+    const tw = Math.min(W - 40, g.measureText(text).width + 70);
+    const x0 = (W - tw) / 2;
+    g.fillStyle = 'rgba(8,8,24,0.82)';
+    g.strokeStyle = hexStr(colHex);
+    g.lineWidth = 6;
+    g.beginPath();
+    g.roundRect ? g.roundRect(x0, 18, tw, 92, 46) : g.rect(x0, 18, tw, 92);
+    g.fill(); g.stroke();
+    g.fillStyle = '#ffffff';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(text, W / 2, 66);
+    const tex = new THREE.CanvasTexture(cv);
+    try { tex.colorSpace = THREE.SRGBColorSpace; } catch (e) {}
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+    sp.scale.set(2.3, 0.575, 1);
+    return sp;
   }
 
   // ──────────────────── DISTRICT: RESEARCH (Floating Books) ────────────────────
@@ -1608,7 +1793,7 @@
     door.position.set(0, 0.48, 1.33); grp.add(door);
 
     // Glowing windows
-    const glowWM = new THREE.MeshStandardMaterial({ color:0xffcc55, emissive:0xff9911, emissiveIntensity:0.9, roughness:0.1 });
+    const glowWM = registerGlow(new THREE.MeshStandardMaterial({ color:0xffcc55, emissive:0xff9911, emissiveIntensity:0.9, roughness:0.1 }));
     for (const wx of [-0.9,0.9]) {
       const win = new THREE.Mesh(new THREE.BoxGeometry(0.6,0.55,0.05), glowWM);
       win.position.set(wx, 1.25, 1.33); grp.add(win);
@@ -1841,6 +2026,10 @@
     g.traverse(o => { if (o.isMesh) o.castShadow = true; });
     g.scale.setScalar(1.08);
 
+    lights.player = new THREE.PointLight(0xffd9a0, 0, 7, 2);
+    lights.player.position.set(0, 1.6, 0.4);
+    g.add(lights.player);
+
     player.grp = g; player.torso = torso; player.head = head; player.antenna = antTip;
     player.pos.y = groundH(player.pos.x, player.pos.z);
     g.position.copy(player.pos);
@@ -1898,7 +2087,7 @@
     if (keys.KeyS || keys.ArrowDown)  iz -= 1;
     if (keys.KeyD || keys.ArrowRight) ix += 1;
     if (keys.KeyA || keys.ArrowLeft)  ix -= 1;
-    ix += joy.x; iz -= joy.y;
+    ix += joy.x + pad.axes[0]; iz -= joy.y + pad.axes[1];
     const len = Math.hypot(ix, iz);
     if (len > 1) { ix /= len; iz /= len; }
     return { ix, iz, mag: Math.min(len, 1) };
@@ -1908,7 +2097,7 @@
     const P = player;
     const canMove = mode === 'play';
     const inp = canMove ? readInput() : { ix:0, iz:0, mag:0 };
-    const sprint = keys.ShiftLeft || keys.ShiftRight || Math.hypot(joy.x, joy.y) > 0.92;
+    const sprint = keys.ShiftLeft || keys.ShiftRight || pad.sprint || Math.hypot(joy.x, joy.y) > 0.92;
     const speed = sprint ? RUN : WALK;
 
     // Camera-relative movement
@@ -2126,9 +2315,14 @@
     gsap.fromTo(cam, { follow: 0.03 }, { follow: 0.2, duration: 1.6, ease: 'power2.in' });
     gsap.to(cam, { tR: 10.5, tPh: 0.98, duration: 1.6, ease: 'power3.inOut' });
 
+    const firstTime = !game.started;
     game.started = true;
+    game.lastProgressAt = elapsed;
     updateModeBtn();
     if (wasTour) toast('Walk mode', 'Explore on foot — press M for the map', '🚶', '#7c83e8');
+    if (firstTime) setTimeout(() => guideSay(isTouch
+      ? "Hi, I'm Byte! Walk into a glowing district and tap E to explore it."
+      : "Hi, I'm Byte! Walk into a glowing district and press E to explore it. Press G if you ever need a hint.", 7000), 1800);
   }
 
   function enterTour() {
@@ -2151,6 +2345,13 @@
     const play = mode === 'play';
     $('mode-ico').textContent = play ? '🗺️' : '🚶';
     $('mode-lbl').textContent = play ? 'Map view' : 'Walk';
+  }
+
+  // Click on a 3D object: project buildings open directly when you're on their street
+  function selectHit(obj) {
+    const key = obj.userData.project;
+    if (key && mode === 'play' && distToZone(3) < ZONES[3].tr + 1) { openProjectPanel(key); return; }
+    selectZone(obj.userData.zoneIndex);
   }
 
   // Click on a district (3D object, label or HUD list)
@@ -2251,6 +2452,7 @@
   function openPanel(idx) {
     const z = ZONES[idx];
     panelZ = idx;
+    panelProj = null;
     const P = $('p-content');
     P.textContent = '';
     P.append(el('div', 'p-section', z.section), el('div', 'p-title', z.title),
@@ -2268,10 +2470,13 @@
       P.append(ul);
     }
     if (z.items) {
+      P.append(el('p', 'p-note', `Tap a card for the full story — or walk up to its building. ${game.projectsSeen.size}/${z.items.length} visited.`));
       const list = el('div', 'p-items');
       z.items.forEach(it => {
         const card = el('div', 'p-item');
         card.style.setProperty('--ic', hexStr(it.col));
+        card.setAttribute('role', 'button');
+        card.tabIndex = 0;
         const meta = el('div', 'p-item-meta');
         meta.append(el('span', null, it.tech));
         it.links.forEach(l => {
@@ -2279,7 +2484,10 @@
           a.href = l.href; a.target = '_blank'; a.rel = 'noopener';
           meta.append(a);
         });
+        if (game.projectsSeen.has(it.key)) meta.append(el('span', 'p-item-seen', '✓ VISITED'));
         card.append(el('h4', null, it.name), el('p', null, it.desc), meta);
+        card.addEventListener('click', e => { if (!e.target.closest('a')) openProjectPanel(it.key); });
+        card.addEventListener('keydown', e => { if (e.key === 'Enter') openProjectPanel(it.key); });
         list.append(card);
       });
       P.append(list);
@@ -2330,9 +2538,56 @@
     discover(idx);
   }
 
+  // Full story for one project (opened from its building or its card)
+  function openProjectPanel(key) {
+    const z = ZONES[3];
+    const it = z.items.find(p => p.key === key);
+    if (!it) return;
+    panelZ = 3;
+    panelProj = key;
+    const P = $('p-content');
+    P.textContent = '';
+    P.append(el('div', 'p-section', `Project ${z.items.indexOf(it) + 1} of ${z.items.length}`), el('div', 'p-title', it.name),
+             el('div', 'p-subtitle', it.tagline || it.tech), el('div', 'p-divider'));
+    const ul = el('ul', 'p-bullets');
+    (it.bullets || [it.desc]).forEach(b => ul.append(el('li', null, b)));
+    P.append(ul);
+    const tags = el('div', 'p-tags');
+    (it.techTags || it.tech.split(' · ')).forEach(t => tags.append(el('span', 'p-tag', t)));
+    P.append(tags);
+    const ctas = el('div', 'p-ctas');
+    it.links.forEach(l => {
+      const a = el('a', 'p-btn', l.label.replace(/ ↗$/, '') + ' ↗');
+      a.href = l.href; a.target = '_blank'; a.rel = 'noopener';
+      ctas.append(a);
+    });
+    const back = el('button', 'p-btn', '← All projects');
+    back.type = 'button';
+    back.addEventListener('click', () => openPanel(3));
+    ctas.append(back);
+    P.append(ctas);
+
+    const hex = hexStr(it.col);
+    document.documentElement.style.setProperty('--accent', hex);
+    document.documentElement.style.setProperty('--accent-glow', hex + '44');
+    const panel = $('info-panel');
+    panel.scrollTop = 0;
+    panel.classList.add('open');
+    document.body.classList.add('panel-open');
+    playClick();
+    updatePrompt();
+    discover(3);
+    if (!game.projectsSeen.has(key)) {
+      game.projectsSeen.add(key);
+      toast(`Project visited · ${it.name.split(' — ')[0]}`, `${game.projectsSeen.size}/${z.items.length} project buildings`, '⬤', hex);
+      saveProgress();
+    }
+  }
+
   function closePanel() {
     if (panelZ === -1 && !$('info-panel').classList.contains('open')) return;
     panelZ = -1;
+    panelProj = null;
     $('info-panel').classList.remove('open');
     document.body.classList.remove('panel-open');
     document.documentElement.style.setProperty('--accent','#7c83e8');
@@ -2364,7 +2619,9 @@
     const p = zoneObjs[i].grp.position;
     burst(p.x, p.y + 3.2, p.z, z.col, 60, 5, 2, 1.3);
     playDiscover();
+    game.lastProgressAt = elapsed;
     updateHUD();
+    saveProgress();
     checkComplete();
   }
 
@@ -2377,7 +2634,9 @@
     burst(o.x, o.grp.position.y, o.z, 0xffffff, 14, 2.5, 1, 0.6);
     playCollect(game.collected);
     toast(`+ ${o.name}`, `${ORB_CATS[o.cat].name} · ${game.collected}/${orbs.length} skills`, '◆', o.hex);
+    game.lastProgressAt = elapsed;
     updateHUD();
+    saveProgress();
     checkComplete();
   }
 
@@ -2399,7 +2658,10 @@
     const d = countDiscovered(), o = game.collected;
     if (d === ZONES.length && !game.toldZones) {
       game.toldZones = true;
-      if (o < orbs.length) toast('All districts found!', `${orbs.length - o} skill orbs left to collect`, '★', '#ffe66d');
+      if (o < orbs.length) {
+        toast('All districts found!', `${orbs.length - o} skill orbs left to collect`, '★', '#ffe66d');
+        guideSay('Every district explored! Only skill orbs left — the minimap shows where they are.', 6000);
+      }
     }
     if (o === orbs.length && !game.toldOrbs) {
       game.toldOrbs = true;
@@ -2410,6 +2672,7 @@
 
   function finishGame() {
     game.complete = true;
+    clearSave();
     const t = game.time, prev = game.best;
     const isBest = !prev || t < prev;
     if (isBest) { game.best = t; saveBest(t); }
@@ -2436,8 +2699,10 @@
   function resetGame() {
     orbs.forEach(o => { o.taken = false; o.grp.visible = true; o.beam.visible = true; });
     game.discovered = ZONES.map(() => false);
+    game.projectsSeen = new Set();
     labelEls.forEach(l => l.classList.remove('done'));
-    Object.assign(game, { collected: 0, time: 0, complete: false, toldZones: false, toldOrbs: false });
+    Object.assign(game, { collected: 0, time: 0, complete: false, toldZones: false, toldOrbs: false, lastProgressAt: elapsed });
+    clearSave();
     closePanel();
     showOverlay('complete', false);
     player.pos.set(SPAWN.x, 0, SPAWN.z);
@@ -2449,6 +2714,35 @@
     cam.lk.set(player.pos.x, player.pos.y + 1.25, player.pos.z);
     updateHUD();
     toast('New run started', 'Timer reset — good luck!', '↺', '#7c83e8');
+  }
+
+  // Saved runs (localStorage) so visitors can continue later
+  function saveProgress() {
+    if (!game.started || game.complete) return;
+    saveJSON(SAVE_KEY, {
+      v: 1, time: game.time, at: Date.now(),
+      discovered: game.discovered,
+      taken: orbs.filter(o => o.taken).map(o => o.name),
+      projects: [...game.projectsSeen]
+    });
+  }
+  function loadSave() {
+    const sv = loadJSON(SAVE_KEY);
+    if (!sv || sv.v !== 1 || !Array.isArray(sv.discovered) || !Array.isArray(sv.taken)) return null;
+    return (sv.discovered.some(Boolean) || sv.taken.length) ? sv : null;
+  }
+  function clearSave() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} }
+  function applySave(sv) {
+    game.discovered = ZONES.map((_, i) => !!sv.discovered[i]);
+    game.discovered.forEach((d, i) => labelEls[i].classList.toggle('done', d));
+    const taken = new Set(sv.taken);
+    orbs.forEach(o => { o.taken = taken.has(o.name); o.grp.visible = o.beam.visible = !o.taken; });
+    game.collected = orbs.filter(o => o.taken).length;
+    game.projectsSeen = new Set(sv.projects || []);
+    game.time = sv.time || 0;
+    game.toldZones = countDiscovered() === ZONES.length;
+    game.toldOrbs = game.collected === orbs.length;
+    updateHUD();
   }
 
   // ──────────────────── HUD ────────────────────
@@ -2482,6 +2776,7 @@
     if (running) game.time += dt;
     const key = Math.floor(game.time) + '|' + running + '|' + game.complete;
     if (key !== lastTimerKey) {
+      if (running && Math.floor(game.time) % 10 === 0) saveProgress();
       lastTimerKey = key;
       const t = $('hud-time');
       t.textContent = (running || game.complete ? '⏱ ' : '⏸ ') + fmtTime(game.time);
@@ -2498,30 +2793,49 @@
         if (d < ZONES[i].tr && d < bestD) { best = i; bestD = d; }
       }
     }
-    if (best !== nearZ) { nearZ = best; updatePrompt(); }
+    // Standing at a project building's door inside the Projects district?
+    let proj = null;
+    if (best === 3) {
+      let pd = 1.9;
+      for (const sp of projectSpots) {
+        const d = Math.hypot(player.pos.x - sp.x, player.pos.z - sp.z);
+        if (d < pd) { pd = d; proj = sp.key; }
+      }
+    }
+    if (best !== nearZ || proj !== nearProj) { nearZ = best; nearProj = proj; updatePrompt(); }
     // Walked away from the district whose panel is open
     if (mode === 'play' && panelZ !== -1 && distToZone(panelZ) > ZONES[panelZ].tr + 2.5) closePanel();
   }
 
+  // What pressing E would open right now, and what's open already
+  function nearTarget() { return nearProj ? 'p:' + nearProj : (nearZ !== -1 ? 'z:' + nearZ : null); }
+  function openTarget() { return panelProj ? 'p:' + panelProj : (panelZ !== -1 ? 'z:' + panelZ : null); }
+
   function updatePrompt() {
     const pr = $('prompt'), act = $('tb-act');
-    const show = mode === 'play' && nearZ !== -1 && panelZ !== nearZ;
+    const target = nearTarget();
+    const show = mode === 'play' && target !== null && target !== openTarget();
     pr.classList.toggle('on', show);
     act.classList.toggle('on', show);
-    if (nearZ !== -1) {
-      const z = ZONES[nearZ], c = hexStr(z.col);
+    if (target) {
+      const sp = nearProj && projectSpots.find(p => p.key === nearProj);
+      const z = ZONES[nearZ];
+      const c = hexStr(sp ? sp.col : z.col);
       pr.style.setProperty('--pc', c); act.style.setProperty('--pc', c);
-      $('prompt-key').textContent = isTouch ? z.icon : 'E';
+      $('prompt-key').textContent = isTouch ? (sp ? '⬤' : z.icon) : 'E';
       $('prompt-text').innerHTML = '';
-      $('prompt-text').append(document.createTextNode(`Explore ${z.label} `),
-        el('small', null, game.discovered[nearZ] ? '· visited' : '· new'));
+      const seen = sp ? game.projectsSeen.has(sp.key) : game.discovered[nearZ];
+      $('prompt-text').append(document.createTextNode(`Explore ${sp ? sp.label : z.label} `),
+        el('small', null, seen ? '· visited' : '· new'));
     }
   }
 
   function interact() {
     if (mode !== 'play') return;
-    if (panelZ !== -1 && (nearZ === -1 || panelZ === nearZ)) { closePanel(); return; }
-    if (nearZ !== -1) openPanel(nearZ);
+    const target = nearTarget();
+    if (panelZ !== -1 && (target === null || target === openTarget())) { closePanel(); return; }
+    if (nearProj) openProjectPanel(nearProj);
+    else if (nearZ !== -1) openPanel(nearZ);
   }
 
   // ──────────────────── TOASTS ────────────────────
@@ -2664,7 +2978,7 @@
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
   function tone(f, dur, vol=0.08, type='sine', when=0, slideTo=0) {
-    if (!soundOn || !audioCtx) return;
+    if (!soundOn || !audioCtx || !settings.sfx) return;
     const t0 = audioCtx.currentTime + when;
     const o = audioCtx.createOscillator(), g = audioCtx.createGain();
     o.connect(g); g.connect(audioCtx.destination);
@@ -2704,6 +3018,365 @@
     windNode.start();
   }
 
+  function stopWind() { if (windNode) { windNode.stop(); windNode = null; } }
+
+  // Generative ambient soundtrack: slow pad chords with a sparse pentatonic melody
+  const music = { gain: null, timer: null, next: 0, bar: 0 };
+  const CHORDS = [[57, 60, 64, 67], [53, 57, 60, 64], [48, 52, 55, 59], [55, 59, 62, 64]]; // Am7 Fmaj7 Cmaj7 G6
+  const MELODY = [69, 72, 74, 76, 79, 81];
+  const BAR = 4.8;
+  const midi = n => 440 * Math.pow(2, (n - 69) / 12);
+
+  function musicVoice(freq, t0, dur, vol, type, attack, release) {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type; o.frequency.value = freq;
+    o.detune.value = (Math.random() - 0.5) * 8;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(vol, t0 + attack);
+    g.gain.setValueAtTime(vol, t0 + Math.max(attack, dur - release));
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(music.gain);
+    o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+
+  function scheduleMusic() {
+    while (music.next < audioCtx.currentTime + 1.5) {
+      const t0 = music.next, chord = CHORDS[music.bar % CHORDS.length];
+      chord.forEach((n, i) => musicVoice(midi(i === 0 ? n - 12 : n), t0, BAR + 1.2, i === 0 ? 0.16 : 0.09, i === 0 ? 'sine' : 'triangle', 1.4, 1.6));
+      for (let k = 0; k < 6; k++) {
+        if (Math.random() < 0.55) musicVoice(midi(MELODY[Math.floor(Math.random() * MELODY.length)]), t0 + k * BAR / 6, 1.4, 0.07, 'sine', 0.02, 1.2);
+      }
+      music.bar++;
+      music.next += BAR;
+    }
+  }
+
+  function startMusic() {
+    if (!audioCtx || music.timer || !soundOn || !settings.music) return;
+    music.gain = audioCtx.createGain();
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 1600;
+    music.gain.connect(lp); lp.connect(audioCtx.destination);
+    music.gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    music.gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 2.5);
+    music.next = audioCtx.currentTime + 0.1;
+    scheduleMusic();
+    music.timer = setInterval(scheduleMusic, 400);
+  }
+
+  function stopMusic() {
+    if (!music.timer) return;
+    clearInterval(music.timer);
+    music.timer = null;
+    const g = music.gain;
+    g.gain.cancelScheduledValues(audioCtx.currentTime);
+    g.gain.setValueAtTime(g.gain.value, audioCtx.currentTime);
+    g.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.8);
+    setTimeout(() => g.disconnect(), 1000);
+  }
+
+  function setSound(on) {
+    soundOn = on;
+    $('sound-btn').textContent = soundOn ? '🔊' : '🔇';
+    if (soundOn) {
+      initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      startWind(); startMusic(); playClick();
+    } else {
+      stopWind(); stopMusic();
+    }
+  }
+
+  // ──────────────────── DAY / NIGHT ────────────────────
+  const DAY_FOG = new THREE.Color(0x0a1628), NIGHT_FOG = new THREE.Color(0x02040b);
+  const SUN_DAY = new THREE.Color(0xfff4e0), SUN_NIGHT = new THREE.Color(0x9fb3ff);
+  function applyEnv(n) {
+    if (skyUniforms) skyUniforms.uNight.value = n;
+    if (waterUniforms) waterUniforms.uNight.value = n;
+    lights.amb.intensity  = lerp(0.25, 0.1, n);
+    lights.hemi.intensity = lerp(0.4, 0.12, n);
+    lights.sun.intensity  = lerp(1.75, 0.35, n);
+    lights.sun.color.copy(SUN_DAY).lerp(SUN_NIGHT, n);
+    lights.fill.intensity = lerp(0.35, 0.12, n);
+    lights.moon.intensity = lerp(0.8, 1.2, n);
+    lights.zone.forEach(l => { l.intensity = lerp(1.1, 1.8, n); l.distance = lerp(11, 13, n); });
+    if (lights.player) lights.player.intensity = n * 1.5;
+    glowMats.forEach(g => { g.mat.emissiveIntensity = g.base * (1 + n * 1.6); });
+    scene.fog.color.copy(DAY_FOG).lerp(NIGHT_FOG, n);
+  }
+  function setTimeOfDay(t, announce) {
+    settings.time = t;
+    env.target = t === 'night' ? 1 : 0;
+    saveSettings();
+    syncSettingsUI();
+    if (announce) toast(t === 'night' ? 'Night falls' : 'Good morning', t === 'night' ? 'Windows glow and fireflies come out' : 'The sun is back up', t === 'night' ? '🌙' : '☀️', '#b69cff');
+  }
+
+  // ──────────────────── GRAPHICS QUALITY ────────────────────
+  function applyQuality() {
+    const high = settings.quality === 'high';
+    renderer.setPixelRatio(Math.min(devicePixelRatio, high ? (isTouch ? 1.5 : 2) : 1));
+    lights.sun.castShadow = high;
+    if (particleSys) particleSys.visible = high;
+    birds.forEach(b => { b.visible = high; });
+  }
+
+  // ──────────────────── SETTINGS PANEL ────────────────────
+  function syncSettingsUI() {
+    document.querySelectorAll('#settings .seg').forEach(seg => {
+      const key = seg.dataset.setting;
+      const val = typeof settings[key] === 'boolean' ? (settings[key] ? 'on' : 'off') : settings[key];
+      seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.value === val));
+    });
+  }
+  function setupSettings() {
+    document.querySelectorAll('#settings .seg').forEach(seg => {
+      seg.addEventListener('click', e => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        const key = seg.dataset.setting, val = b.dataset.value;
+        if (key === 'time') { setTimeOfDay(val, false); return; }
+        if (key === 'quality') { settings.quality = val; applyQuality(); }
+        else settings[key] = val === 'on';
+        if (key === 'music') settings.music ? startMusic() : stopMusic();
+        saveSettings();
+        syncSettingsUI();
+      });
+    });
+    $('settings-btn').addEventListener('click', () => showOverlay('settings', true));
+    $('settings-close').addEventListener('click', () => showOverlay('settings', false));
+    $('settings').addEventListener('click', e => { if (e.target.id === 'settings') showOverlay('settings', false); });
+    $('set-reset').addEventListener('click', () => {
+      clearSave();
+      try { localStorage.removeItem(BEST_KEY); } catch (e) {}
+      game.best = 0;
+      $('st-best').textContent = '';
+      toast('Saved data cleared', 'Progress and best time reset on this device', '↺', '#ff8c42');
+    });
+    syncSettingsUI();
+  }
+
+  // ──────────────────── GUIDE COMPANION ("Byte") ────────────────────
+  const guide = { grp: null, ring: null, eyes: null, pos: new THREE.Vector3(), until: 0, lastHintAt: -999 };
+
+  function makeGuide() {
+    const g = new THREE.Group();
+    const shell = new THREE.MeshStandardMaterial({ color: 0x2a2f5a, roughness: 0.3, metalness: 0.6 });
+    const glowM = new THREE.MeshBasicMaterial({ color: 0x4ecdc4 });
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 14), shell);
+    g.add(body);
+    const face = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 12), new THREE.MeshStandardMaterial({ color: 0x0b0d1f, roughness: 0.1, metalness: 0.8 }));
+    face.scale.set(1, 0.8, 0.55); face.position.z = 0.14;
+    g.add(face);
+    const eyes = new THREE.Group();
+    [-0.055, 0.055].forEach(ex => {
+      const e = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.06, 0.02), glowM);
+      e.position.set(ex, 0.01, 0.23);
+      eyes.add(e);
+    });
+    g.add(eyes);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.016, 6, 40), glowM);
+    ring.rotation.x = Math.PI / 2;
+    g.add(ring);
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: GLOW_TEX, color: 0x4ecdc4, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+    halo.scale.setScalar(1.1); halo.position.y = -0.18;
+    g.add(halo);
+    g.visible = false;
+    guide.grp = g; guide.ring = ring; guide.eyes = eyes;
+    guide.pos.set(player.pos.x + 1, player.pos.y + 2, player.pos.z);
+    scene.add(g);
+  }
+
+  function guideSay(text, ms) {
+    if (mode !== 'play') return;
+    $('guide-text').textContent = text;
+    guide.until = elapsed + (ms || 6000) / 1000;
+    guide.lastHintAt = elapsed;
+  }
+
+  // "ahead", "to your left", "behind you"… relative to where the camera looks
+  function directionWords(tx, tz) {
+    const dx = tx - player.pos.x, dz = tz - player.pos.z;
+    const fwd = dx * -Math.sin(cam.th) + dz * -Math.cos(cam.th);
+    const side = dx * Math.cos(cam.th) + dz * -Math.sin(cam.th);
+    const a = Math.atan2(side, fwd) * 180 / Math.PI, abs = Math.abs(a), lr = a > 0 ? 'right' : 'left';
+    if (abs < 25) return 'straight ahead';
+    if (abs < 70) return `ahead to your ${lr}`;
+    if (abs < 115) return `to your ${lr}`;
+    if (abs < 155) return `behind you to the ${lr}`;
+    return 'behind you';
+  }
+
+  function hintText() {
+    let best = null, bd = Infinity;
+    ZONES.forEach((z, i) => {
+      if (game.discovered[i]) return;
+      const d = distToZone(i);
+      if (d < bd) { bd = d; best = z; }
+    });
+    if (best) return `The ${best.label} district is ${directionWords(best.pos[0], best.pos[1])} — about ${Math.max(1, Math.round(bd))} m away. Walk in and press E.`;
+    let orb = null; bd = Infinity;
+    orbs.forEach(o => {
+      if (o.taken) return;
+      const d = Math.hypot(o.x - player.pos.x, o.z - player.pos.z);
+      if (d < bd) { bd = d; orb = o; }
+    });
+    if (orb) return `There's a ${orb.name} orb ${directionWords(orb.x, orb.z)}, ${Math.max(1, Math.round(bd))} m away.${orb.high ? ' It floats high — jump for it!' : ''}`;
+    return "You've found everything — amazing work!";
+  }
+
+  function askGuide() { if (mode === 'play') guideSay(hintText(), 7000); }
+
+  function tickGuide(dt) {
+    const g = guide.grp;
+    const show = mode === 'play';
+    g.visible = show;
+    const bubble = $('guide-bubble');
+    if (!show) { bubble.classList.remove('on'); return; }
+
+    // Hover beside the player's right shoulder, a little behind
+    const f = player.facing;
+    const tx = player.pos.x + Math.cos(f) * 0.95 - Math.sin(f) * 0.45;
+    const tz = player.pos.z - Math.sin(f) * 0.95 - Math.cos(f) * 0.45;
+    guide.pos.x += (tx - guide.pos.x) * Math.min(1, dt * 3);
+    guide.pos.z += (tz - guide.pos.z) * Math.min(1, dt * 3);
+    guide.pos.y += (player.pos.y + 2.05 - guide.pos.y) * Math.min(1, dt * 3);
+    g.position.set(guide.pos.x, guide.pos.y + Math.sin(elapsed * 2.2) * 0.08, guide.pos.z);
+    g.rotation.y = lerpAngle(g.rotation.y, f, Math.min(1, dt * 4));
+    guide.ring.rotation.z += dt * 2.5;
+    guide.eyes.scale.y = (elapsed % 3.2) < 0.12 ? 0.15 : 1; // blink
+
+    // Offer a hint when the player hasn't made progress for a while
+    if (settings.guide && panelZ === -1 && elapsed - game.lastProgressAt > 35 && elapsed - guide.lastHintAt > 35) {
+      guideSay(hintText(), 7000);
+    }
+
+    const talking = elapsed < guide.until && panelZ === -1;
+    bubble.classList.toggle('on', talking);
+    if (talking) {
+      _wp.copy(g.position); _wp.y += 0.35;
+      _wp.project(camera);
+      const sx = (_wp.x * 0.5 + 0.5) * innerWidth, sy = (-_wp.y * 0.5 + 0.5) * innerHeight;
+      bubble.style.transform = `translate(${Math.round(sx + 14)}px, ${Math.round(sy - bubble.offsetHeight - 6)}px)`;
+    }
+  }
+
+  // ──────────────────── GAMEPAD ────────────────────
+  function pollGamepad(dt) {
+    pad.axes = [0, 0, 0, 0]; pad.sprint = false;
+    const list = navigator.getGamepads ? navigator.getGamepads() : [];
+    let gp = null;
+    for (const g of list) if (g && g.connected) { gp = g; break; }
+    if (!gp) return;
+    const dz = v => (Math.abs(v || 0) < 0.15 ? 0 : v);
+    pad.axes = [dz(gp.axes[0]), dz(gp.axes[1]), dz(gp.axes[2]), dz(gp.axes[3])];
+    const down = i => !!(gp.buttons[i] && gp.buttons[i].pressed);
+    const hit = i => down(i) && !pad.prev[i];
+    if (down(12)) pad.axes[1] = -1;
+    if (down(13)) pad.axes[1] = 1;
+    if (down(14)) pad.axes[0] = -1;
+    if (down(15)) pad.axes[0] = 1;
+    pad.sprint = down(7) || down(10);
+
+    if (isOpen('start')) {
+      if (hit(0)) (loadSave() ? continueGame() : startGame(false));
+    } else if (isOpen('help') || isOpen('settings') || isOpen('complete')) {
+      if (hit(1) || hit(0)) { showOverlay('help', false); showOverlay('settings', false); showOverlay('complete', false); }
+    } else if (mode !== 'intro') {
+      if (hit(0) && mode === 'play') player.jumpQueued = true;
+      if (hit(2)) interact();
+      if (hit(1) && panelZ !== -1) dismissPanel();
+      if (hit(3)) askGuide();
+      if (hit(9)) toggleMode();
+      if (hit(8)) showOverlay('help', true);
+      // Right stick looks around; bumpers zoom
+      if (pad.axes[2] || pad.axes[3]) {
+        const minPh = mode === 'play' ? 0.45 : 0.2, maxPh = mode === 'play' ? 1.42 : 1.45;
+        cam.tTh -= pad.axes[2] * dt * 2.6;
+        cam.tPh = clamp(cam.tPh + pad.axes[3] * dt * 1.6, minPh, maxPh);
+        if (mode === 'tour') pauseAutoRot();
+      }
+      const zoom = (down(4) ? 1 : 0) - (down(5) ? 1 : 0);
+      if (zoom) cam.tR = mode === 'play' ? clamp(cam.tR + zoom * dt * 10, 4.5, 22) : clamp(cam.tR + zoom * dt * 30, 14, 82);
+    }
+    pad.prev = gp.buttons.map(b => b.pressed);
+  }
+
+  // ──────────────────── CONTENT FROM THE PORTFOLIO PAGE ────────────────────
+  // The slides in index.html are the single source of truth. When the page can
+  // be fetched, district text is refreshed from it; otherwise the built-in copy
+  // above is used (e.g. when game.html is opened straight from disk).
+  async function loadPortfolioContent() {
+    try {
+      const res = await fetch('index.html', { cache: 'no-cache' });
+      if (!res.ok) return;
+      const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+      const txt = n => (n ? n.textContent.replace(/\s+/g, ' ').trim() : '');
+      const all = (root, sel) => (root ? [...root.querySelectorAll(sel)].map(txt).filter(Boolean) : []);
+      const links = (root, sel) => (root ? [...root.querySelectorAll(sel)].map(a => ({ label: txt(a), href: a.getAttribute('href') })).filter(l => l.href) : []);
+      const SUP = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+      const metric = n => {
+        if (!n) return '';
+        const sup = n.querySelector('sup');
+        if (!sup) return txt(n);
+        return txt(n).replace(txt(sup), '') + [...txt(sup)].map(c => SUP[c] || c).join('');
+      };
+
+      // Identity
+      const about = doc.getElementById('about');
+      if (about) {
+        const stats = [...about.querySelectorAll('.metric-card')].map(c => ({ n: metric(c.querySelector('.metric-num')), l: txt(c.querySelector('.metric-title')) })).filter(s => s.n);
+        if (stats.length) ZONES[0].stats = stats;
+        const intro = txt(about.querySelector('.summary-text p'));
+        if (intro) ZONES[0].body = intro;
+      }
+
+      // Experience
+      const xp = doc.getElementById('experience');
+      if (xp) {
+        const z = ZONES[1];
+        z.title = txt(xp.querySelector('.job-title-group h3')) || z.title;
+        const sub = [txt(xp.querySelector('.job-company')), txt(xp.querySelector('.job-date')), txt(xp.querySelector('.job-location'))].filter(Boolean);
+        if (sub.length) z.subtitle = sub.join('  ·  ');
+        const bullets = all(xp, '.job-bullets li');
+        if (bullets.length) z.bullets = bullets;
+        const ctas = links(xp, '.project-links a');
+        if (ctas.length) z.ctas = ctas;
+      }
+
+      // Skills
+      const sk = doc.getElementById('skills');
+      if (sk) {
+        const groups = [...sk.querySelectorAll('.skill-category')].map(c => ({ name: txt(c.querySelector('h3')), tags: all(c, '.skill-tag') })).filter(g => g.tags.length);
+        if (groups.length) ZONES[2].groups = groups;
+      }
+
+      // Projects (one entry per building)
+      ZONES[3].items.forEach(it => {
+        const sec = doc.getElementById(it.key);
+        if (!sec) return;
+        it.name = txt(sec.querySelector('.project-info h3')) || it.name;
+        it.tagline = txt(sec.querySelector('.project-tagline')) || it.tagline;
+        const bullets = all(sec, '.project-desc li');
+        if (bullets.length) it.bullets = bullets;
+        const tech = all(sec, '.project-tech .skill-tag');
+        if (tech.length) { it.techTags = tech; it.tech = tech.slice(0, 4).join(' · '); }
+        const l = links(sec, '.project-links a');
+        if (l.length) it.links = l.map(x => ({ label: x.label + ' ↗', href: x.href }));
+      });
+
+      // Research
+      const rs = doc.getElementById('research');
+      if (rs) {
+        const z = ZONES[4];
+        z.title = txt(rs.querySelector('.paper-title')) || z.title;
+        z.subtitle = txt(rs.querySelector('.paper-journal')) || z.subtitle;
+        const bullets = all(rs, '.paper-bullets li');
+        if (bullets.length) z.bullets = bullets;
+      }
+    } catch (e) { /* offline or opened from disk: keep the built-in copy */ }
+  }
+
   // ──────────────────── MAIN LOOP ────────────────────
   function animate() {
     requestAnimationFrame(animate);
@@ -2715,10 +3388,19 @@
     if (autoRot && !dragging && selZ === -1 && mode !== 'play' && !reduceMotion) {
       cam.tTh += 0.003 * dt * 60;
     }
+    pollGamepad(dt);
+
+    // Day / night transition
+    if (Math.abs(env.target - env.night) > 0.001) {
+      env.night += (env.target - env.night) * Math.min(1, dt * 1.6);
+      if (Math.abs(env.target - env.night) < 0.002) env.night = env.target;
+      applyEnv(env.night);
+    }
+
     // Keyboard camera in tour mode
     if (mode === 'tour' && selZ === -1) {
-      const rot = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
-      const zoom = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0);
+      const rot = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0) + pad.axes[0];
+      const zoom = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.ArrowUp ? 1 : 0) + pad.axes[1];
       if (rot || zoom) {
         cam.tTh += rot * dt * 1.3;
         cam.tR = clamp(cam.tR + zoom * dt * 26, 14, 82);
@@ -2734,6 +3416,7 @@
     if (!dragging) doRaycast();
     tickLabels();
     tickCursor();
+    tickGuide(dt);
     drawMinimap();
 
     swayTrees(elapsed);
@@ -2782,7 +3465,7 @@
         fp.setY(i, 0.4 + (Math.abs(p*1.618)%5.5) + Math.sin(elapsed*1.6+p)*0.9);
       }
       fp.needsUpdate = true;
-      fireflySys.material.opacity = 0.5 + Math.sin(elapsed*3)*0.4;
+      fireflySys.material.opacity = (0.5 + Math.sin(elapsed*3)*0.4) * lerp(0.6, 1, env.night);
     }
 
     if (particleSys) particleSys.rotation.y = elapsed*0.015;
@@ -2830,8 +3513,16 @@
   function showOverlay(id, on) { $(id).classList.toggle('on', on); }
   function isOpen(id) { return $(id).classList.contains('on'); }
 
-  function startGame(asTour) {
+  function continueGame() {
+    const sv = loadSave();
+    if (sv) applySave(sv);
+    startGame(false, true);
+  }
+
+  function startGame(asTour, resumed) {
     if (document.activeElement) document.activeElement.blur();
+    if (asTour) { const sv = loadSave(); if (sv) applySave(sv); }
+    else if (!resumed) clearSave();
     showOverlay('start', false);
     $('hud').classList.add('on');
     if (asTour) {
@@ -2842,7 +3533,8 @@
       toast('Quick tour', isTouch ? 'Tap any district to fly there' : 'Click any district to fly there · M to walk', '🗺️', '#4ecdc4');
     } else {
       enterPlay();
-      setTimeout(() => toast('Find all 6 districts', 'and collect 18 skill orbs', '📍', '#7c83e8'), 900);
+      if (resumed) setTimeout(() => toast('Welcome back!', `${countDiscovered()}/${ZONES.length} districts · ${game.collected}/${orbs.length} orbs so far`, '▶', '#7c83e8'), 900);
+      else setTimeout(() => toast('Find all 6 districts', 'and collect 18 skill orbs', '📍', '#7c83e8'), 900);
     }
   }
 
@@ -2892,7 +3584,7 @@
       if (dragMoved || mode === 'intro') return;
       raycaster.setFromCamera(mouse,camera);
       const hits=raycaster.intersectObjects(hitList,false);
-      if(hits.length>0) selectZone(hits[0].object.userData.zoneIndex);
+      if(hits.length>0) selectHit(hits[0].object);
     });
 
     // Scroll = zoom
@@ -2908,18 +3600,21 @@
       if (isOpen('start')) {
         // Let a focused "Quick tour" button handle its own Enter/Space
         if (document.activeElement.closest('#start button')) return;
-        if (k === 'Enter' || k === 'Space') { e.preventDefault(); startGame(false); }
+        if (k === 'Enter' || k === 'Space') { e.preventDefault(); loadSave() ? continueGame() : startGame(false); }
         return;
       }
       if (k === 'Escape') {
-        if (isOpen('help')) showOverlay('help', false);
+        if (isOpen('settings')) showOverlay('settings', false);
+        else if (isOpen('help')) showOverlay('help', false);
         else if (isOpen('complete')) showOverlay('complete', false);
         else if (panelZ !== -1) dismissPanel();
         return;
       }
       if (k === 'KeyH' || e.key === '?') { showOverlay('help', !isOpen('help')); return; }
-      if (isOpen('help') || isOpen('complete') || mode === 'intro') return;
+      if (isOpen('help') || isOpen('complete') || isOpen('settings') || mode === 'intro') return;
       if (k === 'KeyM' || k === 'Tab') { e.preventDefault(); toggleMode(); return; }
+      if (k === 'KeyN') { setTimeOfDay(settings.time === 'night' ? 'day' : 'night', true); return; }
+      if (k === 'KeyG') { askGuide(); return; }
       if (/^Digit[1-6]$/.test(k)) { selectZone(+k.slice(5) - 1); return; }
       if (k.startsWith('Arrow') || k === 'Space') e.preventDefault();
       keys[k] = true;
@@ -2940,16 +3635,25 @@
     $('help-close').addEventListener('click', () => showOverlay('help', false));
     $('help').addEventListener('click', e => { if (e.target.id === 'help') showOverlay('help', false); });
     $('st-play').addEventListener('click', () => startGame(false));
+    $('st-continue').addEventListener('click', continueGame);
+    $('hud-hint').addEventListener('click', askGuide);
     $('st-tour').addEventListener('click', () => startGame(true));
     $('done-again').addEventListener('click', resetGame);
     $('done-free').addEventListener('click', () => showOverlay('complete', false));
 
-    // Sound
-    $('sound-btn').addEventListener('click', () => {
-      soundOn=!soundOn;
-      $('sound-btn').textContent = soundOn ? '🔊' : '🔇';
-      if(soundOn){initAudio(); if (audioCtx.state === 'suspended') audioCtx.resume(); startWind(); playClick();}
-      else if(windNode){windNode.stop();windNode=null;}
+    // Sound (master switch for effects, wind and music)
+    $('sound-btn').addEventListener('click', () => setSound(!soundOn));
+    document.addEventListener('visibilitychange', () => {
+      if (!audioCtx) return;
+      if (document.hidden) audioCtx.suspend();
+      else if (soundOn) audioCtx.resume();
+    });
+
+    // Keep progress if the tab is closed mid-run
+    window.addEventListener('pagehide', saveProgress);
+
+    window.addEventListener('gamepadconnected', () => {
+      toast('Controller connected', 'Left stick move · A jump · X explore · Y hint', '🎮', '#4ecdc4');
     });
 
     // Touch: drag-to-look on the canvas (tracks its own finger so the joystick can be held)
@@ -2989,7 +3693,7 @@
         mouse.set((tStart.x/innerWidth)*2-1, -(tStart.y/innerHeight)*2+1);
         raycaster.setFromCamera(mouse,camera);
         const hits = raycaster.intersectObjects(hitList,false);
-        if (hits.length > 0) selectZone(hits[0].object.userData.zoneIndex);
+        if (hits.length > 0) selectHit(hits[0].object);
       }
       pauseAutoRot();
     });
@@ -3056,6 +3760,9 @@
     if (isTouch) document.body.classList.add('touch');
     cursorEl = $('cursor'); cursorRingEl = $('c-ring');
 
+    // Read district text from the portfolio slides while the world builds
+    loadPortfolioContent();
+
     // Init + build world
     init();
     const glowTex = GLOW_TEX = makeGlowTexture();
@@ -3064,10 +3771,22 @@
     makeProjects(); makeResearch(); makeContact();
     makeOrbs(glowTex);
     makeTrees(); makeRocks();
-    makePlayer(); makeFX(glowTex);
+    makePlayer(); makeFX(glowTex); makeGuide();
     makeClouds(); makeBirds(); makeParticles();
-    buildLabels(); buildHUD(); setupMinimap(); setupEvents();
+    buildLabels(); buildHUD(); setupMinimap(); setupEvents(); setupSettings();
+    applyEnv(env.night);
+    applyQuality();
     if (game.best) $('st-best').textContent = `🏆 Your best time: ${fmtTime(game.best)}`;
+
+    // Offer to continue a saved run
+    const sv = loadSave();
+    if (sv) {
+      const d = sv.discovered.filter(Boolean).length;
+      $('st-continue').hidden = false;
+      $('st-play').textContent = '↺ New game';
+      $('st-play').classList.remove('primary');
+      $('st-save').textContent = `Saved run: ${d}/${ZONES.length} districts · ${sv.taken.length}/${SKILL_ORBS.length} orbs · ${fmtTime(sv.time || 0)}`;
+    }
 
     // Start render loop immediately (low camera, smooth fly-in)
     cam.ph=0.22; cam.r=90; cam.tPh=0.62; cam.tR=50;

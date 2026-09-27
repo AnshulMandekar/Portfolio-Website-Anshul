@@ -14,8 +14,9 @@
 This is a **fully custom-built portfolio website** for **Anshul Ravindra Mandekar**, a Full-Stack Developer & AI Researcher currently pursuing a B.Tech in Computer Science at Symbiosis Institute of Technology, Pune.
 
 The site serves as a **dynamic, interactive resume** — designed to stand out from generic PDF resumes. It includes:
-- A **14-slide interactive presentation** covering every aspect of the resume.
+- A **15-slide interactive presentation** covering every aspect of the resume — or read it as a normal scrolling page.
 - A **command palette** (`Ctrl/⌘ + K`), clickable skill → project cross-links, an image lightbox and a playable mini-game on the retro console.
+- **Light & dark themes**, a shareable link for every slide, a one-click **CV download**, a **contact form** and **live GitHub / LeetCode stats**.
 - An **ElevenLabs Conversational AI** voice agent for live Q&A.
 - An **"Anshul's World" 3D portfolio game** built from scratch in WebGL/Three.js, accessible from the last slide.
 
@@ -28,14 +29,22 @@ No frameworks, no build tools — **100% vanilla HTML, CSS, and JavaScript**.
 ```
 portfolio_website/
 │
-├── index.html          # Main portfolio — 14-slide presentation
+├── index.html          # Main portfolio — 15-slide presentation
 ├── game.html           # 3D interactive portfolio game (WebGL)
 ├── style.css           # Complete design system & all component styles
-├── script.js           # Presentation controller, navigation, slider logic
+├── script.js           # Presentation controller, navigation, interactive modules
+├── anshul.html         # Redirect for older links (e.g. the URL printed on the resume)
+├── favicon.ico / favicon.svg
+├── nginx.conf, Dockerfile, docker-compose.yml, Jenkinsfile, deployment.yaml, service.yaml
 │
-├── Anshul_pfp.PNG      # Profile photo (hero slide)
+├── Anshul_pfp.webp     # Profile photo served on the page (+ -360 variant); .PNG is the original
 │
 └── assets/             # Project screenshots and visuals
+    │                   # Pages load the .webp files (and -800 variants via srcset);
+    │                   # the .png/.jpg files are the originals they were generated from.
+    ├── Anshul_Mandekar_Resume.pdf  # CV served by the "Download CV" buttons
+    ├── og-image.png          # 1200×630 social preview card
+    ├── apple-touch-icon.png
     ├── crm01.png       # CRM internship project — screen 1
     ├── crm02.png       # CRM internship project — screen 2
     ├── crm03.png       # CRM internship project — screen 3
@@ -57,7 +66,7 @@ portfolio_website/
 
 ## 🖥️ Main Portfolio (`index.html`)
 
-The main portfolio is a **full-screen, vertical slide-based presentation** — similar to PowerPoint but in the browser. It has **14 slides**, each covering a distinct section of the resume.
+The main portfolio is a **full-screen, vertical slide-based presentation** — similar to PowerPoint but in the browser. It has **15 slides**, each covering a distinct section of the resume. The top bar can switch it to a regular **scroll view** (remembered per visitor).
 
 ### Navigation
 | Method | Action |
@@ -72,6 +81,7 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 | **Scroll** | Naturally detects active slide via Intersection Observer |
 | **Ctrl/⌘ + K** or **/** | Open the command palette (search sections, projects, links and actions) |
 | **Arrow Left / Right** | Cycle the screenshots on project slides |
+| **Links** | Every slide has its own URL (`/#taskflow`, `/#research`, `/#contact`…) — share it, and the browser **Back** button returns to the previous slide |
 
 ### Interactive Details
 - **Command palette** — fuzzy search over every slide, project tech tag and external link, plus actions like *Copy email* and *Launch the 3D world*.
@@ -80,6 +90,9 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 - **Motion** — slide progress bar, staggered entrance animations, count-up metrics, card spotlight/tilt and magnetic buttons (all disabled under `prefers-reduced-motion`).
 - **Project media** — autoplaying sliders with a progress bar (pauses on hover), swipe support and a fullscreen lightbox.
 - **ANSHUL 64** — press **A** on the console mockup to play *Bug Hunt*, a tiny snake game with a saved best score.
+- **Themes & views** — sun/moon button switches light/dark; the layout button switches slides/scroll view. Both are saved in `localStorage`.
+- **Contact slide** — a validated contact form (with honeypot spam protection), copy-email button, CV download and live stats.
+- **Live stats** — public repos, followers and top language from the GitHub API, plus solved-problem count from LeetCode. Cached for an hour; the static "200+" is shown if the APIs are unreachable.
 - **Easter egg** — try the Konami code.
 
 ### Slide Breakdown
@@ -100,6 +113,7 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 | 12 | **Research & Publications** | SCI-published paper on *Generative Adversarial Networks in Urban Digital Twins* (2026). Conditional WGAN-GP — KL Divergence of 9.78×10⁻⁷, outperforming VAE baselines. |
 | 13 | **Education & Credentials** | B.Tech CSE at SIT Pune (2023–2027, CGPA 7.45), Class XII & X (CBSE). Certifications: NCA, Full Stack Gen AI, ML A-Z. Honors: 2x SIH Qualifier, Deloitte Hacksplosion L2, 200+ LeetCode problems. |
 | 14 | **Bored of Reading?** | Invitation to launch the 3D portfolio game, with feature highlights and a "Launch 3D World" button. Features a retro game console card that plays the *Bug Hunt* mini-game. |
+| 15 | **Let's Connect** | Contact form, email, CV download and live GitHub / LeetCode stats. |
 
 ---
 
@@ -115,8 +129,16 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 - **Minimap**: Shows the island, paths, remaining orbs, discovered districts and your facing direction.
 - **Fast Travel**: Click a district (in the world, its label, or the HUD list) or press `1`–`6` to teleport next to it.
 - **Quick Tour Mode**: The original orbit-and-click experience — press `M` to switch between walking and the map view.
+- **Project Buildings**: In the Projects district each building carries a name sign; walk up to its door to open that project's full story.
+- **One Source of Truth**: District and project text is read from `index.html` at load time, so editing the slides updates the game too (a built-in copy is used if the page can't be fetched).
+- **Byte, the Guide**: A companion drone follows you and offers direction-aware hints ("the Research district is ahead to your right…") when you seem stuck or press `G`.
+- **Day / Night**: Toggle with `N` or the settings panel — the sky, water, lights and fireflies change, windows glow and your avatar carries a lantern.
+- **Music & Sound**: A generative ambient soundtrack plus sound effects, all behind the sound button (off by default).
+- **Saved Progress**: Runs are saved on the device; the start screen offers *Continue* or *New game*.
+- **Settings & Quality**: Time of day, graphics quality (low turns off shadows and extra particles — default on phones), music, sound effects and hints.
+- **Controllers**: Standard gamepads work alongside keyboard, mouse and touch.
 - **Mobile**: On-screen joystick, jump and explore buttons, drag-to-look and pinch-to-zoom.
-- **Custom Cursor**, **Loading Screen**, procedural sound effects (off by default) and **Glassmorphism UI Panels**.
+- **Custom Cursor**, **Loading Screen** and **Glassmorphism UI Panels**.
 - **Color Palette**: Deep-space dark theme (`#05050f` background) with `#7c83e8` (indigo) accent, `#4ecdc4` (teal), and `#ff9ff3` (pink) gradient highlights.
 - **Font**: *Outfit* (Google Fonts) — 300 to 800 weight range.
 
@@ -130,31 +152,52 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 | `1` – `6` | Travel to a district |
 | `M` / `Tab` | Toggle walk mode / map (tour) view |
 | Mouse drag / scroll | Rotate / zoom the camera |
+| `G` | Ask Byte for a hint |
+| `N` | Toggle day / night |
 | `H` / `?` | Controls help |
 | `Esc` | Close panel or overlay |
+
+| Controller | Action |
+|---|---|
+| Left stick / D-pad | Move |
+| Right stick · LB / RB | Look · zoom |
+| A · X · B · Y | Jump · explore · close · hint |
+| RT or left-stick click | Sprint |
+| Start · Back | Map view · help |
 
 ---
 
 ## 🎨 Design System (`style.css`)
 
-The entire visual identity is defined in a single **~34KB CSS file** — no Tailwind, no Bootstrap.
+The entire visual identity is defined in a single CSS file — no Tailwind, no Bootstrap.
 
 ### Core Design Tokens
 ```css
 :root {
-  --bg-primary:    #05050f;    /* Deep space black */
-  --bg-secondary:  #0a0a1a;    /* Slide background */
-  --accent:        #7c83e8;    /* Indigo accent */
-  --accent-glow:   rgba(124,131,232,0.35);
-  --text-primary:  #ffffff;
-  --glass:         rgba(8,8,24,0.75);  /* Glassmorphism panels */
-  --glass-border:  rgba(255,255,255,0.1);
+  --bg-primary:     #0a0a0a;              /* Page & slide background */
+  --bg-card:        #161616;              /* Cards and panels */
+  --text-primary:   #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted:     #626262;
+  --fg-rgb:         255, 255, 255;        /* Tint for subtle overlays: rgba(var(--fg-rgb), .08) */
+  --surface-rgb:    20, 20, 24;           /* Floating panels (palette, toasts, popovers) */
+  --border-color:   rgba(var(--fg-rgb), 0.08);
+  --brand-indigo:   #7c83e8;
+  --brand-teal:     #4ecdc4;
+  --brand-pink:     #ff9ff3;
+  --gradient-brand: linear-gradient(90deg, #7c83e8, #4ecdc4, #ff9ff3);
+  --font-heading:   'Outfit', sans-serif;
+  --font-body:      'Inter', sans-serif;
 }
+
+/* The light theme only overrides these tokens */
+:root[data-theme="light"] { --bg-primary: #f5f5f2; --text-primary: #111114; --fg-rgb: 17, 17, 20; /* … */ }
 ```
+The 3D game (`game.html`) keeps its own deep-space palette (`#05050f` background) inside the file.
 
 ### Key Design Patterns
 - **Glassmorphism** — translucent panels with backdrop blur on cards, control bars, and overlays.
-- **Dark Mode First** — deep space color palette throughout.
+- **Dark first, light available** — every colour comes from theme tokens, so the light theme is a small override block.
 - **Micro-animations** — hover effects on buttons, slide transitions, nav dot pulses, glow effects.
 - **CSS Grid & Flexbox** — fully responsive two-column layouts on each slide.
 - **Retro Game UI** — pixel grid, blinking "PRESS START" text, and D-pad console mockup in the Bored slide.
@@ -171,16 +214,17 @@ All interactivity is handled by a **single vanilla JS file** — the slide engin
 
 #### Slide Presentation Engine
 - Uses `IntersectionObserver` (threshold: 45%) to detect which slide is in the viewport and update the active state, dots, and counter.
-- `scrollToSlide(index)` — smoothly scrolls to the target slide using `scrollIntoView`.
+- `scrollToSlide(index, push, instant)` — scrolls to the target slide; `push` records a browser-history entry so **Back** works.
+- Each `<section>`'s `id` is its shareable hash (`#finveritas`); the address bar follows the slide on screen and `/#slug` links open straight on that slide.
 - Arrow keys, Page Up/Down, Space, Home, End keyboard shortcuts.
 
 #### Dot Navigation
-- 12 sidebar nav dots, each with a hover label.
+- 15 sidebar nav dots, each with a hover label.
 - Click events on dots call `scrollToSlide()`.
 
 #### Prev/Next Buttons
 - Disabled state on first/last slides.
-- Live counter in `01 / 12` format.
+- Live counter in `01 / 15` format; the `NN / 15` labels on each slide are also filled in by the script.
 
 #### Project Image Slider
 - `moveProjectSlider(sliderId, direction)` — cycles through project screenshots with previous/next buttons.
@@ -192,8 +236,8 @@ All interactivity is handled by a **single vanilla JS file** — the slide engin
 - Overlays (command palette, lightbox, console mini-game) register a key lock so slide shortcuts pause while they're open.
 - Skill cross-links search each experience/project/research slide for keywords (see `SKILL_KEYWORDS`), so the links stay in sync with slide content.
 
-#### Mode Toggle (Legacy)
-- The codebase retains a `document-mode` / `presentation-mode` toggle handler (the toggle button has since been removed from the HTML, but the logic remains in `script.js` for potential re-activation).
+#### Slides / Scroll View
+- The top-bar button switches `presentation-mode` ↔ `document-mode`. The observer is rebuilt for the new scroller, the progress bar becomes a reading-progress bar, and the choice is saved.
 
 ---
 
@@ -203,10 +247,21 @@ The portfolio integrates an **ElevenLabs Conversational AI widget** embedded dir
 
 ```html
 <elevenlabs-convai agent-id="agent_5501kxqsfx1wew8rv19gh6nt983x"></elevenlabs-convai>
-<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 ```
 
-This places a voice-chat button on the page that allows visitors to **ask questions about Anshul's experience, projects, and skills** in natural language, powered by a custom ElevenLabs AI agent.
+This places a voice-chat button on the page that allows visitors to **ask questions about Anshul's experience, projects, and skills** in natural language, powered by a custom ElevenLabs AI agent. The widget script is injected once the page is idle so it doesn't slow down the first paint.
+
+---
+
+## 🔧 Configuration
+
+| What | Where |
+|---|---|
+| **Contact form delivery** | Create a free form at [Formspree](https://formspree.io), then put its URL in `data-endpoint` on `<form id="contact-form">` in `index.html` (e.g. `data-endpoint="https://formspree.io/f/abcdwxyz"`). Left empty, the form opens a pre-filled email in the visitor's mail app. |
+| **CV file** | Replace `assets/Anshul_Mandekar_Resume.pdf` (keep the name, or update the three links and `RESUME_URL` in `script.js`). |
+| **Live stats accounts** | `GITHUB_USER` / `LEETCODE_USER` in `script.js`. LeetCode has no public CORS API, so its count comes from the community `alfa-leetcode-api` proxy. |
+| **Cache busting** | After editing `style.css` or `script.js`, bump the `?v=` value on their links in `index.html`. |
+| **Images** | Pages use `.webp` files; regenerate them (and the `-800` variants) when a screenshot changes. |
 
 ---
 
@@ -250,6 +305,8 @@ The site is deployed as a **static site on [Render](https://render.com)**.
 | **Publish Directory** | `.` (root of the repository) |
 | **Branch** | `main` |
 
+Caching: `nginx.conf` makes browsers revalidate HTML/CSS/JS on every visit (cheap `304`s), caches images for a month and the CV for an hour, so a new deploy shows up immediately.
+
 To deploy your own copy:
 1. Push this repository to GitHub.
 2. Create a new **Static Site** on Render.
@@ -263,11 +320,12 @@ To deploy your own copy:
 
 | Metric | Value |
 |---|---|
-| Lines of HTML | ~1,000 |
-| Lines of CSS | ~3,200 |
-| Lines of JS (portfolio) | ~1,400 |
-| Lines of JS (3D game) | ~2,100 |
-| Total Asset Size | ~2.5 MB |
+| Lines of HTML | ~1,200 |
+| Lines of CSS | ~3,800 |
+| Lines of JS (portfolio) | ~1,700 |
+| Lines of JS (3D game) | ~2,900 |
+| Images served | ~0.9 MB WebP (down from ~3.8 MB PNG/JPG) |
+| Lighthouse (desktop) | Performance 99 · Accessibility 96 · Best Practices 100 · SEO 100 |
 | Zero dependencies | No npm, no bundler |
 | Google PageSpeed (ISKCON project) | 90+ |
 
