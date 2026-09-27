@@ -22,12 +22,26 @@
 
 <body class="presentation-mode">
 
+    <!-- Slide Progress -->
+    <div class="progress-track" aria-hidden="true">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
     <!-- Top Navigation Control Bar -->
     <header class="control-bar">
         <div class="control-brand">
             ANSHUL <span>MANDEKAR</span>
         </div>
         <div class="control-actions">
+            <button type="button" class="cmdk-trigger" id="cmdk-open" aria-label="Open quick navigation">
+                <i class="fas fa-search"></i>
+                <span>Jump to…</span>
+                <kbd class="cmdk-kbd">Ctrl K</kbd>
+            </button>
+            <a href="game.html" class="bar-icon-btn" aria-label="Play the 3D portfolio game"
+                title="Play the 3D portfolio game">
+                <i class="fas fa-gamepad"></i>
+            </a>
         </div>
     </header>
 
@@ -109,18 +123,31 @@
 
         <!-- SLIDE 1: Cover / Hero -->
         <section class="slide active">
+            <canvas class="hero-canvas" aria-hidden="true"></canvas>
             <div class="slide-content">
                 <div class="hero-layout">
                     <div class="hero-left">
+                        <div class="status-pill">
+                            <span class="pulse-dot"></span> Open to Full-Stack &amp; AI/ML roles
+                        </div>
                         <h1>Anshul Ravindra <span>Mandekar</span></h1>
                         <p class="hero-subtitle">Full-Stack Developer &amp; AI Researcher</p>
+                        <p class="hero-typed">
+                            <span class="sr-only">I build multi-agent LLM systems, deep learning pipelines, scalable
+                                cloud apps on AWS and real-time MERN platforms.</span>
+                            <span aria-hidden="true">I build
+                                <span class="typed-text" id="typed-text">multi-agent LLM systems</span><span
+                                    class="typed-caret"></span></span>
+                        </p>
                         <div class="hero-details">
                             <div class="detail-item">
                                 <i class="fas fa-map-marker-alt"></i> Pune, India
                             </div>
-                            <div class="detail-item">
+                            <button type="button" class="detail-item copy-email"
+                                data-copy="anshulmandekar21@gmail.com" title="Copy email address">
                                 <i class="fas fa-envelope"></i> anshulmandekar21@gmail.com
-                            </div>
+                                <i class="far fa-copy copy-icon" aria-hidden="true"></i>
+                            </button>
                         </div>
                         <div class="hero-socials">
                             <a href="https://github.com/AnshulMandekar" target="_blank" rel="noopener"
@@ -185,15 +212,15 @@
                             <div class="metric-title">Rank - Industry Conclave 2026</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-num">20K+</div>
+                            <div class="metric-num"><span data-count="20">20</span>K+</div>
                             <div class="metric-title">Active Users Supported</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-num">95%+</div>
+                            <div class="metric-num"><span data-count="95">95</span>%+</div>
                             <div class="metric-title">ML Detection Accuracy</div>
                         </div>
                         <div class="metric-card">
-                            <div class="metric-num">10<sup>-7</sup></div>
+                            <div class="metric-num">10<sup data-count="-7">-7</sup></div>
                             <div class="metric-title">KL Divergence Urban GAN</div>
                         </div>
                     </div>
@@ -206,6 +233,8 @@
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Technical Summary</h2>
+                    <span class="slide-hint"><i class="fas fa-hand-pointer"></i> Click a skill to see where I used
+                        it</span>
                     <span class="slide-num">03 / 14</span>
                 </div>
                 <div class="skills-grid">
@@ -853,30 +882,31 @@
                         <h3>Tired of reading portfolios all day? 🥱</h3>
                         <p class="bored-description">
                             Staring at text-heavy resumes and scanning bullet points for hours is exhausting.
-                            Let's change the pace! Step into a fully interactive 3D virtual environment.
-                            Navigate through custom districts, explore projects, and experience my portfolio like a
-                            video game.
+                            Let's change the pace! Step onto a 3D island built from my resume — walk its districts,
+                            collect skill orbs and race the clock to explore it all.
                         </p>
                         <div class="bored-highlights">
                             <div class="bored-highlight-item">
                                 <span class="highlight-icon">🕹️</span>
                                 <div class="highlight-details">
-                                    <h4>3D Exploration</h4>
-                                    <p>Roam freely through a stylized virtual space using WASD or arrow controls.</p>
+                                    <h4>Walk the Island</h4>
+                                    <p>Move with WASD or arrow keys (or an on-screen joystick on mobile) — sprint,
+                                        jump and explore on foot.</p>
                                 </div>
                             </div>
                             <div class="bored-highlight-item">
-                                <span class="highlight-icon">🚀</span>
+                                <span class="highlight-icon">💎</span>
                                 <div class="highlight-details">
-                                    <h4>Interactive Portals</h4>
-                                    <p>Discover project districts and fly between interactive experience hubs.</p>
+                                    <h4>Collect 18 Skill Orbs</h4>
+                                    <p>Every orb unlocks one of my skills. Find them all, then beat your best time.</p>
                                 </div>
                             </div>
                             <div class="bored-highlight-item">
-                                <span class="highlight-icon">👾</span>
+                                <span class="highlight-icon">🗺️</span>
                                 <div class="highlight-details">
-                                    <h4>Immersive Gaming</h4>
-                                    <p>Who said recruiting can't be fun? Play my resume instead of reading it.</p>
+                                    <h4>Six Districts</h4>
+                                    <p>Experience, projects, research and more — each opens a detailed card. In a
+                                        hurry? Take the quick tour.</p>
                                 </div>
                             </div>
                         </div>
@@ -889,38 +919,88 @@
                     </div>
                     <div class="bored-visual">
                         <div class="game-console-card">
-                            <div class="console-screen">
+                            <div class="console-screen" id="console-screen">
+                                <canvas class="console-canvas" id="console-canvas" role="img"
+                                    aria-label="Bug Hunt mini-game screen"></canvas>
                                 <div class="pixel-grid"></div>
                                 <div class="screen-glare"></div>
                                 <div class="game-intro">
                                     <div class="game-title">ANSHUL'S WORLD</div>
                                     <div class="game-subtitle">3D PORTFOLIO GAME</div>
-                                    <div class="press-start-blink">PRESS START TO PLAY</div>
+                                    <div class="press-start-blink">PRESS A TO PLAY</div>
                                 </div>
                             </div>
                             <div class="console-controls">
                                 <div class="d-pad">
-                                    <div class="d-arrow d-up"></div>
-                                    <div class="d-arrow d-right"></div>
-                                    <div class="d-arrow d-down"></div>
-                                    <div class="d-arrow d-left"></div>
+                                    <button type="button" class="d-arrow d-up" data-dir="up" aria-label="Up"></button>
+                                    <button type="button" class="d-arrow d-right" data-dir="right"
+                                        aria-label="Right"></button>
+                                    <button type="button" class="d-arrow d-down" data-dir="down"
+                                        aria-label="Down"></button>
+                                    <button type="button" class="d-arrow d-left" data-dir="left"
+                                        aria-label="Left"></button>
                                     <div class="d-center"></div>
                                 </div>
                                 <div class="action-buttons">
-                                    <div class="retro-btn btn-y">Y</div>
-                                    <div class="retro-btn btn-x">X</div>
-                                    <div class="retro-btn btn-b">B</div>
-                                    <div class="retro-btn btn-a">A</div>
+                                    <button type="button" class="retro-btn btn-y" data-btn="y"
+                                        aria-label="Y button">Y</button>
+                                    <button type="button" class="retro-btn btn-x" data-btn="x"
+                                        aria-label="X button">X</button>
+                                    <button type="button" class="retro-btn btn-b" data-btn="b"
+                                        aria-label="B button: exit mini-game">B</button>
+                                    <button type="button" class="retro-btn btn-a" data-btn="a"
+                                        aria-label="A button: play Bug Hunt">A</button>
                                 </div>
                             </div>
                             <div class="console-brand">ANSHUL 64</div>
                         </div>
+                        <p class="console-caption">Press <b>A</b> for a quick round of <em>Bug Hunt</em> — steer
+                            with the arrows.</p>
                     </div>
                 </div>
             </div>
         </section>
 
     </main>
+
+    <!-- Command Palette (Ctrl/⌘ + K or "/") -->
+    <div class="cmdk" id="cmdk" aria-hidden="true">
+        <div class="cmdk-backdrop" data-cmdk-close></div>
+        <div class="cmdk-panel" role="dialog" aria-modal="true" aria-label="Quick navigation">
+            <div class="cmdk-search">
+                <i class="fas fa-search"></i>
+                <input id="cmdk-input" type="text" placeholder="Jump to a section, project or link…"
+                    autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true"
+                    aria-controls="cmdk-list" aria-autocomplete="list">
+                <kbd>Esc</kbd>
+            </div>
+            <ul class="cmdk-list" id="cmdk-list" role="listbox" aria-label="Results"></ul>
+            <div class="cmdk-footer">
+                <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+                <span><kbd>↵</kbd> select</span>
+                <span class="cmdk-footer-hint"><kbd>/</kbd> opens this anytime</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" aria-hidden="true">
+        <div class="lightbox-backdrop" data-lb-close></div>
+        <figure class="lightbox-figure">
+            <img id="lightbox-img" alt="">
+            <figcaption id="lightbox-caption"></figcaption>
+        </figure>
+        <div class="lightbox-count" id="lightbox-count"></div>
+        <button type="button" class="lightbox-btn lb-close" data-lb-close aria-label="Close image viewer"><i
+                class="fas fa-times"></i></button>
+        <button type="button" class="lightbox-btn lb-prev" id="lb-prev" aria-label="Previous image"><i
+                class="fas fa-chevron-left"></i></button>
+        <button type="button" class="lightbox-btn lb-next" id="lb-next" aria-label="Next image"><i
+                class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
 
     <!-- ElevenLabs Conversational AI Widget -->
     <elevenlabs-convai agent-id="agent_5501kxqsfx1wew8rv19gh6nt983x"></elevenlabs-convai>

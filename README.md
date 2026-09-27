@@ -14,7 +14,8 @@
 This is a **fully custom-built portfolio website** for **Anshul Ravindra Mandekar**, a Full-Stack Developer & AI Researcher currently pursuing a B.Tech in Computer Science at Symbiosis Institute of Technology, Pune.
 
 The site serves as a **dynamic, interactive resume** — designed to stand out from generic PDF resumes. It includes:
-- A **12-slide interactive presentation** covering every aspect of the resume.
+- A **14-slide interactive presentation** covering every aspect of the resume.
+- A **command palette** (`Ctrl/⌘ + K`), clickable skill → project cross-links, an image lightbox and a playable mini-game on the retro console.
 - An **ElevenLabs Conversational AI** voice agent for live Q&A.
 - An **"Anshul's World" 3D portfolio game** built from scratch in WebGL/Three.js, accessible from the last slide.
 
@@ -69,6 +70,17 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 | **Sidebar dots** | Click to jump to any slide |
 | **Prev/Next buttons** | Bottom navigation bar |
 | **Scroll** | Naturally detects active slide via Intersection Observer |
+| **Ctrl/⌘ + K** or **/** | Open the command palette (search sections, projects, links and actions) |
+| **Arrow Left / Right** | Cycle the screenshots on project slides |
+
+### Interactive Details
+- **Command palette** — fuzzy search over every slide, project tech tag and external link, plus actions like *Copy email* and *Launch the 3D world*.
+- **Skill cross-links** — click any skill tag to see which projects use it and jump straight there.
+- **Hero** — cursor-reactive constellation background, rotating "I build …" typewriter, availability pill and one-click email copy.
+- **Motion** — slide progress bar, staggered entrance animations, count-up metrics, card spotlight/tilt and magnetic buttons (all disabled under `prefers-reduced-motion`).
+- **Project media** — autoplaying sliders with a progress bar (pauses on hover), swipe support and a fullscreen lightbox.
+- **ANSHUL 64** — press **A** on the console mockup to play *Bug Hunt*, a tiny snake game with a saved best score.
+- **Easter egg** — try the Konami code.
 
 ### Slide Breakdown
 
@@ -87,7 +99,7 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 | 11 | **Project 06 — LectureNotes AI** | Full-stack AI application powered by FastAPI, Google Gemini 2.5 Flash, MongoDB Atlas, and Mermaid.js for YouTube lecture synthesis, timestamp-synced playback, and dynamic concept maps. |
 | 12 | **Research & Publications** | SCI-published paper on *Generative Adversarial Networks in Urban Digital Twins* (2026). Conditional WGAN-GP — KL Divergence of 9.78×10⁻⁷, outperforming VAE baselines. |
 | 13 | **Education & Credentials** | B.Tech CSE at SIT Pune (2023–2027, CGPA 7.45), Class XII & X (CBSE). Certifications: NCA, Full Stack Gen AI, ML A-Z. Honors: 2x SIH Qualifier, Deloitte Hacksplosion L2, 200+ LeetCode problems. |
-| 14 | **Bored of Reading?** | Invitation to launch the 3D portfolio game, with feature highlights and a "Launch 3D World" button. Features a retro game console UI card. |
+| 14 | **Bored of Reading?** | Invitation to launch the 3D portfolio game, with feature highlights and a "Launch 3D World" button. Features a retro game console card that plays the *Bug Hunt* mini-game. |
 
 ---
 
@@ -96,23 +108,30 @@ The main portfolio is a **full-screen, vertical slide-based presentation** — s
 **"Anshul's World"** is a fully playable **3D interactive experience** built using **WebGL via Three.js (CDN)**, accessible from the final slide. It transforms the portfolio into an explorable virtual space — a unique recruiter engagement tool.
 
 ### Features
-- **Custom 3D World**: Stylized virtual districts representing different areas of the portfolio (projects, skills, etc.).
-- **First-person-style Navigation**: Move through the world using **WASD or Arrow keys**.
-- **Interactive Portals/Objects**: Click or approach objects to trigger project information panels.
-- **Custom Cursor**: The browser default cursor is hidden and replaced with a custom game cursor.
-- **Loading Screen**: Animated gradient loader with a progress bar and phase descriptions before the world renders.
-- **Glassmorphism UI Panels**: Project detail cards and info overlays appear with a frosted glass style.
+- **Playable Avatar**: Walk a low-poly island in third person — sprint, jump, collide with buildings and trees, and follow the hilly terrain.
+- **Six Districts**: Identity, Experience, Skills, Projects, Research and Contact. Walk up to one and press `E` to open its detail card (projects get one card per project, with live links).
+- **Skill Orbs**: 18 collectible orbs, one per skill, marked by light beams. A few float high and need a jump.
+- **Objectives & Timer**: HUD tracks districts found, orbs collected and your time (paused while you read). Clearing everything triggers fireworks and saves your best time locally.
+- **Minimap**: Shows the island, paths, remaining orbs, discovered districts and your facing direction.
+- **Fast Travel**: Click a district (in the world, its label, or the HUD list) or press `1`–`6` to teleport next to it.
+- **Quick Tour Mode**: The original orbit-and-click experience — press `M` to switch between walking and the map view.
+- **Mobile**: On-screen joystick, jump and explore buttons, drag-to-look and pinch-to-zoom.
+- **Custom Cursor**, **Loading Screen**, procedural sound effects (off by default) and **Glassmorphism UI Panels**.
 - **Color Palette**: Deep-space dark theme (`#05050f` background) with `#7c83e8` (indigo) accent, `#4ecdc4` (teal), and `#ff9ff3` (pink) gradient highlights.
 - **Font**: *Outfit* (Google Fonts) — 300 to 800 weight range.
 
 ### Game Controls
 | Key | Action |
 |---|---|
-| `W` / `↑` | Move forward |
-| `S` / `↓` | Move backward |
-| `A` / `←` | Strafe left |
-| `D` / `→` | Strafe right |
-| `Click` | Interact with objects / open portals |
+| `W` `A` `S` `D` / Arrow keys | Move (camera-relative) |
+| `Shift` | Sprint |
+| `Space` | Jump |
+| `E` / `Enter` | Explore the district you're standing in (press again to close) |
+| `1` – `6` | Travel to a district |
+| `M` / `Tab` | Toggle walk mode / map (tour) view |
+| Mouse drag / scroll | Rotate / zoom the camera |
+| `H` / `?` | Controls help |
+| `Esc` | Close panel or overlay |
 
 ---
 
@@ -146,7 +165,7 @@ The entire visual identity is defined in a single **~34KB CSS file** — no Tail
 
 ## ⚙️ JavaScript Controller (`script.js`)
 
-All interactivity is handled by a **single 223-line vanilla JS file**.
+All interactivity is handled by a **single vanilla JS file** — the slide engine plus a set of small, independent interactive modules.
 
 ### Key Systems
 
@@ -167,6 +186,11 @@ All interactivity is handled by a **single 223-line vanilla JS file**.
 - `moveProjectSlider(sliderId, direction)` — cycles through project screenshots with previous/next buttons.
 - `setProjectSlider(sliderId, targetIdx)` — jumps directly to a specific image by clicking dot indicators.
 - Works on any slider element with the `slider` class and an ID.
+
+#### Interactive Layer
+- Every slide change dispatches a `slidechange` event; the modules below (`initInteractiveLayer`) subscribe to it instead of polling.
+- Overlays (command palette, lightbox, console mini-game) register a key lock so slide shortcuts pause while they're open.
+- Skill cross-links search each experience/project/research slide for keywords (see `SKILL_KEYWORDS`), so the links stay in sync with slide content.
 
 #### Mode Toggle (Legacy)
 - The codebase retains a `document-mode` / `presentation-mode` toggle handler (the toggle button has since been removed from the HTML, but the logic remains in `script.js` for potential re-activation).
@@ -239,10 +263,10 @@ To deploy your own copy:
 
 | Metric | Value |
 |---|---|
-| Lines of HTML | ~789 |
-| Lines of CSS | ~1,100+ |
-| Lines of JS (portfolio) | ~223 |
-| Lines of JS (3D game) | ~1,600+ |
+| Lines of HTML | ~1,000 |
+| Lines of CSS | ~3,200 |
+| Lines of JS (portfolio) | ~1,400 |
+| Lines of JS (3D game) | ~2,100 |
 | Total Asset Size | ~2.5 MB |
 | Zero dependencies | No npm, no bundler |
 | Google PageSpeed (ISKCON project) | 90+ |
