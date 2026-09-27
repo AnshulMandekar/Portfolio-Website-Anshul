@@ -12,15 +12,79 @@
     <meta name="keywords"
         content="Anshul Ravindra Mandekar, Portfolio, Full-Stack, MERN, AWS, LangChain, RAG, AI Researcher, SIT Pune, Nagpur">
     <meta name="author" content="Anshul Ravindra Mandekar">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="canonical" href="https://portfolio-website-anshul-1.onrender.com/">
 
-    <!-- Style Sheets -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Social link previews (LinkedIn, WhatsApp, X, Slack…) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Anshul Mandekar">
+    <meta property="og:title" content="Anshul Ravindra Mandekar — Full-Stack Developer &amp; AI Researcher">
+    <meta property="og:description"
+        content="Multi-agent LLM systems, deep learning pipelines and scalable cloud apps. Explore my work as slides — or play it as a 3D game.">
+    <meta property="og:url" content="https://portfolio-website-anshul-1.onrender.com/">
+    <meta property="og:image" content="https://portfolio-website-anshul-1.onrender.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Anshul Ravindra Mandekar — Full-Stack Developer and AI Researcher">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Anshul Ravindra Mandekar — Full-Stack Developer &amp; AI Researcher">
+    <meta name="twitter:description"
+        content="Multi-agent LLM systems, deep learning pipelines and scalable cloud apps. Explore my work as slides — or play it as a 3D game.">
+    <meta name="twitter:image" content="https://portfolio-website-anshul-1.onrender.com/assets/og-image.png">
 
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Icons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Anshul Ravindra Mandekar",
+        "jobTitle": "Full-Stack Developer & AI Researcher",
+        "url": "https://portfolio-website-anshul-1.onrender.com/",
+        "image": "https://portfolio-website-anshul-1.onrender.com/assets/og-image.png",
+        "email": "mailto:anshulmandekar21@gmail.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "Pune", "addressCountry": "IN" },
+        "alumniOf": "Symbiosis Institute of Technology, Pune",
+        "sameAs": [
+            "https://github.com/AnshulMandekar",
+            "https://linkedin.com/in/anshul-mandekar-4b75b2292",
+            "https://leetcode.com/u/anshulmandekar21/"
+        ]
+    }
+    </script>
+
+    <!-- Apply the saved colour theme before first paint (avoids a flash) -->
+    <script>
+        try {
+            if (localStorage.getItem('portfolio.theme') === 'light') document.documentElement.dataset.theme = 'light';
+        } catch (e) { /* storage unavailable */ }
+    </script>
+
+    <!-- Web fonts & icons load without blocking first paint -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700;800&amp;display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700;800&amp;display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
+    <!-- Style Sheets (bump ?v= when these files change so browsers fetch the new copy) -->
+    <link rel="stylesheet" href="style.css?v=20260927">
 </head>
 
 <body class="presentation-mode">
+    <script>
+        try {
+            if (localStorage.getItem('portfolio.view') === 'document') document.body.className = 'document-mode';
+        } catch (e) { /* storage unavailable */ }
+    </script>
 
     <!-- Slide Progress -->
     <div class="progress-track" aria-hidden="true">
@@ -38,7 +102,19 @@
                 <span>Jump to…</span>
                 <kbd class="cmdk-kbd">Ctrl K</kbd>
             </button>
-            <a href="game.html" class="bar-icon-btn" aria-label="Play the 3D portfolio game"
+            <a href="assets/Anshul_Mandekar_Resume.pdf" download="Anshul_Mandekar_Resume.pdf"
+                class="bar-icon-btn bar-cv-btn" title="Download my CV (PDF)">
+                <i class="fas fa-file-arrow-down"></i><span>CV</span>
+            </a>
+            <button type="button" class="bar-icon-btn" id="theme-toggle" aria-label="Switch to light theme"
+                title="Switch to light theme">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button type="button" class="bar-icon-btn" id="mode-toggle" aria-label="Switch to scroll view"
+                title="Switch to scroll view">
+                <i class="fas fa-align-left"></i>
+            </button>
+            <a href="game.html" class="bar-icon-btn bar-game-btn" aria-label="Play the 3D portfolio game"
                 title="Play the 3D portfolio game">
                 <i class="fas fa-gamepad"></i>
             </a>
@@ -103,6 +179,10 @@
             <span class="dot-label">Bored?</span>
             <button class="nav-dot" aria-label="Go to Bored of Reading slide"></button>
         </div>
+        <div class="dot-wrapper" data-slide="14">
+            <span class="dot-label">Contact</span>
+            <button class="nav-dot" aria-label="Go to Contact slide"></button>
+        </div>
     </nav>
 
     <!-- Bottom Presentation Navigation Bar -->
@@ -111,7 +191,7 @@
             <i class="fas fa-chevron-up"></i>
         </button>
         <div id="current-num" class="pres-counter">
-            <span>01</span> / 14
+            <span>01</span> / 15
         </div>
         <button id="next-btn" class="pres-nav-btn" aria-label="Next Slide">
             <i class="fas fa-chevron-down"></i>
@@ -122,7 +202,7 @@
     <main class="slides-container">
 
         <!-- SLIDE 1: Cover / Hero -->
-        <section class="slide active">
+        <section class="slide active" id="home">
             <canvas class="hero-canvas" aria-hidden="true"></canvas>
             <div class="slide-content">
                 <div class="hero-layout">
@@ -162,12 +242,19 @@
                                 class="social-btn">
                                 <i class="fas fa-code"></i> LeetCode
                             </a>
+                            <a href="assets/Anshul_Mandekar_Resume.pdf" download="Anshul_Mandekar_Resume.pdf"
+                                class="social-btn social-btn-solid">
+                                <i class="fas fa-file-arrow-down"></i> Resume
+                            </a>
                         </div>
                     </div>
                     <div class="hero-right">
                         <div class="profile-frame">
                             <div class="profile-image-container">
-                                <img src="Anshul_pfp.PNG" alt="Anshul Ravindra Mandekar Portrait">
+                                <img src="Anshul_pfp.webp" srcset="Anshul_pfp-360.webp 360w, Anshul_pfp.webp 640w"
+                                    sizes="(max-width: 480px) 180px, (max-width: 1024px) 250px, 320px"
+                                    width="640" height="640" fetchpriority="high"
+                                    alt="Anshul Ravindra Mandekar Portrait">
                             </div>
                         </div>
                     </div>
@@ -180,11 +267,11 @@
         </section>
 
         <!-- SLIDE 2: About Me / Professional Summary -->
-        <section class="slide">
+        <section class="slide" id="about">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>About Me</h2>
-                    <span class="slide-num">02 / 14</span>
+                    <span class="slide-num">02 / 15</span>
                 </div>
                 <div class="about-layout">
                     <div class="about-left">
@@ -229,13 +316,13 @@
         </section>
 
         <!-- SLIDE 3: Technical Summary -->
-        <section class="slide">
+        <section class="slide" id="skills">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Technical Summary</h2>
                     <span class="slide-hint"><i class="fas fa-hand-pointer"></i> Click a skill to see where I used
                         it</span>
-                    <span class="slide-num">03 / 14</span>
+                    <span class="slide-num">03 / 15</span>
                 </div>
                 <div class="skills-grid">
                     <div class="skill-category">
@@ -296,11 +383,11 @@
         </section>
 
         <!-- SLIDE 4: Work Experience -->
-        <section class="slide">
+        <section class="slide" id="experience">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Work Experience</h2>
-                    <span class="slide-num">04 / 14</span>
+                    <span class="slide-num">04 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="job-card" style="margin: 0; border: none; padding: 0; background: transparent;">
@@ -343,10 +430,14 @@
 
                     <div class="project-visual slider" id="crm-slider">
                         <div class="slider-wrapper">
-                            <img src="assets/crm01.png" class="slide-img active" alt="CRM System Interface Screen 1">
-                            <img src="assets/crm02.png" class="slide-img" alt="CRM System Interface Screen 2">
-                            <img src="assets/crm03.png" class="slide-img" alt="CRM System Interface Screen 3">
-                            <img src="assets/crm04.png" class="slide-img" alt="CRM System Interface Screen 4">
+                            <img src="assets/crm01.webp" srcset="assets/crm01-800.webp 800w, assets/crm01.webp 1256w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img active" alt="CRM System Interface Screen 1">
+                            <img src="assets/crm02.webp" srcset="assets/crm02-800.webp 800w, assets/crm02.webp 1265w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img" alt="CRM System Interface Screen 2">
+                            <img src="assets/crm03.webp" srcset="assets/crm03-800.webp 800w, assets/crm03.webp 1267w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img" alt="CRM System Interface Screen 3">
+                            <img src="assets/crm04.webp" srcset="assets/crm04-800.webp 800w, assets/crm04.webp 1275w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img" alt="CRM System Interface Screen 4">
                         </div>
                         <button class="slider-btn prev" onclick="moveProjectSlider('crm-slider', -1)"
                             aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
@@ -368,11 +459,11 @@
         </section>
 
         <!-- SLIDE 5: Projects Table of Contents / Index -->
-        <section class="slide">
+        <section class="slide" id="projects">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Technical Projects</h2>
-                    <span class="slide-num">05 / 14</span>
+                    <span class="slide-num">05 / 15</span>
                 </div>
                 <div class="projects-index">
                     <div class="project-idx-card">
@@ -385,8 +476,7 @@
                                 Explainable background review pipeline using multi-agent LLMs (LangGraph) and RAG.
                             </p>
                         </div>
-                        <a href="#slide-5" class="proj-idx-link"
-                            onclick="document.querySelector('.dot-wrapper[data-slide=\'5\']').click(); return false;">Details</a>
+                        <a href="#finveritas" class="proj-idx-link">Details</a>
                     </div>
                     <div class="project-idx-card">
                         <div>
@@ -399,8 +489,7 @@
                                 augmentation.
                             </p>
                         </div>
-                        <a href="#slide-6" class="proj-idx-link"
-                            onclick="document.querySelector('.dot-wrapper[data-slide=\'6\']').click(); return false;">Details</a>
+                        <a href="#microplastics" class="proj-idx-link">Details</a>
                     </div>
                     <div class="project-idx-card">
                         <div>
@@ -413,8 +502,7 @@
                                 convolutional layers.
                             </p>
                         </div>
-                        <a href="#slide-7" class="proj-idx-link"
-                            onclick="document.querySelector('.dot-wrapper[data-slide=\'7\']').click(); return false;">Details</a>
+                        <a href="#intrusion-detection" class="proj-idx-link">Details</a>
                     </div>
                     <div class="project-idx-card">
                         <div>
@@ -427,8 +515,7 @@
                                 acceleration.
                             </p>
                         </div>
-                        <a href="#slide-8" class="proj-idx-link"
-                            onclick="document.querySelector('.dot-wrapper[data-slide=\'8\']').click(); return false;">Details</a>
+                        <a href="#iskcon-memorial" class="proj-idx-link">Details</a>
                     </div>
                     <div class="project-idx-card">
                         <div>
@@ -440,8 +527,7 @@
                                 AI-powered task management platform featuring multimodal classification and context-aware chat.
                             </p>
                         </div>
-                        <a href="#slide-9" class="proj-idx-link"
-                            onclick="document.querySelector('.dot-wrapper[data-slide=\'9\']').click(); return false;">Details</a>
+                        <a href="#taskflow" class="proj-idx-link">Details</a>
                     </div>
                     <div class="project-idx-card">
                         <div>
@@ -453,19 +539,18 @@
                                 AI-powered YouTube lecture note synthesis &amp; interactive visual concept maps with Gemini 2.5 Flash.
                             </p>
                         </div>
-                        <a href="#slide-10" class="proj-idx-link"
-                            onclick="document.querySelector('.dot-wrapper[data-slide=\'10\']').click(); return false;">Details</a>
+                        <a href="#lecturenotes" class="proj-idx-link">Details</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- SLIDE 6: Project 1: Explainable Financial Background Review System -->
-        <section class="slide">
+        <section class="slide" id="finveritas">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Project 01</h2>
-                    <span class="slide-num">06 / 14</span>
+                    <span class="slide-num">06 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="project-info">
@@ -504,13 +589,16 @@
                     </div>
                     <div class="project-visual slider" id="finvaritas-slider">
                         <div class="slider-wrapper">
-                            <img src="assets/financial_agents.jpg" class="slide-img active"
+                            <img src="assets/financial_agents.webp" loading="lazy" decoding="async" class="slide-img active"
                                 alt="Multi-agent node connection and data metrics diagram illustration">
-                            <img src="assets/FinVaritas02.jpg" class="slide-img"
+                            <img src="assets/FinVaritas02.webp" srcset="assets/FinVaritas02-800.webp 800w, assets/FinVaritas02.webp 1280w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img"
                                 alt="Financial Background Review Dashboard Screen 2">
-                            <img src="assets/FinVaritas03.jpg" class="slide-img"
+                            <img src="assets/FinVaritas03.webp" srcset="assets/FinVaritas03-800.webp 800w, assets/FinVaritas03.webp 1280w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img"
                                 alt="Financial Background Review Dashboard Screen 3">
-                            <img src="assets/FinVaritas04.jpg" class="slide-img"
+                            <img src="assets/FinVaritas04.webp" srcset="assets/FinVaritas04-800.webp 800w, assets/FinVaritas04.webp 1280w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img"
                                 alt="Financial Background Review Dashboard Screen 4">
                         </div>
                         <button class="slider-btn prev" onclick="moveProjectSlider('finvaritas-slider', -1)"
@@ -533,11 +621,11 @@
         </section>
 
         <!-- SLIDE 7: Project 2: Microplastic Detection Pipeline -->
-        <section class="slide">
+        <section class="slide" id="microplastics">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Project 02</h2>
-                    <span class="slide-num">07 / 14</span>
+                    <span class="slide-num">07 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="project-info">
@@ -569,7 +657,8 @@
                         </ul>
                     </div>
                     <div class="project-visual">
-                        <img src="assets/microplastics.jpg"
+                        <img src="assets/microplastics.webp" srcset="assets/microplastics-800.webp 800w, assets/microplastics.webp 1600w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async"
                             alt="Microscopic analysis visualization grid with particle boundary indicators">
                     </div>
                 </div>
@@ -577,11 +666,11 @@
         </section>
 
         <!-- SLIDE 8: Project 3: Intrusion Detection System (IDS) -->
-        <section class="slide">
+        <section class="slide" id="intrusion-detection">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Project 03</h2>
-                    <span class="slide-num">08 / 14</span>
+                    <span class="slide-num">08 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="project-info">
@@ -612,7 +701,7 @@
                         </ul>
                     </div>
                     <div class="project-visual">
-                        <img src="assets/network_ids.jpg"
+                        <img src="assets/network_ids.webp" loading="lazy" decoding="async"
                             alt="Cybersecurity network packet traffic matrix grid flow illustration">
                     </div>
                 </div>
@@ -620,11 +709,11 @@
         </section>
 
         <!-- SLIDE 9: Project 4: ISKCON Devotee Memorial Platform -->
-        <section class="slide">
+        <section class="slide" id="iskcon-memorial">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Project 04</h2>
-                    <span class="slide-num">09 / 14</span>
+                    <span class="slide-num">09 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="project-info">
@@ -661,7 +750,7 @@
                         </ul>
                     </div>
                     <div class="project-visual">
-                        <img src="assets/iskcon_memorial.png"
+                        <img src="assets/iskcon_memorial.webp" loading="lazy" decoding="async"
                             alt="Monochromatic devotee temple layout silhouette illustration">
                     </div>
                 </div>
@@ -669,11 +758,11 @@
         </section>
 
         <!-- SLIDE 10: Project 5: TaskFlow — AI-Powered Task Manager -->
-        <section class="slide">
+        <section class="slide" id="taskflow">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Project 05</h2>
-                    <span class="slide-num">10 / 14</span>
+                    <span class="slide-num">10 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="project-info">
@@ -707,8 +796,10 @@
                     </div>
                     <div class="project-visual slider" id="taskflow-slider">
                         <div class="slider-wrapper">
-                            <img src="assets/TaskManager1.png" class="slide-img active" alt="TaskFlow Dashboard View showing categorized task boards and due today summary">
-                            <img src="assets/TaskManager2.png" class="slide-img" alt="TaskFlow AI Chat View showcasing contextual command prompt and task details">
+                            <img src="assets/TaskManager1.webp" srcset="assets/TaskManager1-800.webp 800w, assets/TaskManager1.webp 1600w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img active" alt="TaskFlow Dashboard View showing categorized task boards and due today summary">
+                            <img src="assets/TaskManager2.webp" srcset="assets/TaskManager2-800.webp 800w, assets/TaskManager2.webp 1600w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async" class="slide-img" alt="TaskFlow AI Chat View showcasing contextual command prompt and task details">
                         </div>
                         <button class="slider-btn prev" onclick="moveProjectSlider('taskflow-slider', -1)"
                             aria-label="Previous image"><i class="fas fa-chevron-left"></i></button>
@@ -726,11 +817,11 @@
         </section>
 
         <!-- SLIDE 11: Project 6: LectureNotes — AI-Powered YouTube Lecture Notes & Concept Maps -->
-        <section class="slide">
+        <section class="slide" id="lecturenotes">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Project 06</h2>
-                    <span class="slide-num">11 / 14</span>
+                    <span class="slide-num">11 / 15</span>
                 </div>
                 <div class="project-detail-layout">
                     <div class="project-info">
@@ -768,7 +859,8 @@
                         </ul>
                     </div>
                     <div class="project-visual">
-                        <img src="assets/Lecture_notes.png"
+                        <img src="assets/Lecture_notes.webp" srcset="assets/Lecture_notes-800.webp 800w, assets/Lecture_notes.webp 1600w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async"
                             alt="LectureNotes AI-Powered YouTube Lecture Notes and Visual Concept Maps Interface">
                     </div>
                 </div>
@@ -776,11 +868,11 @@
         </section>
 
         <!-- SLIDE 12: Research & Publications -->
-        <section class="slide">
+        <section class="slide" id="research">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Research &amp; Publications</h2>
-                    <span class="slide-num">12 / 14</span>
+                    <span class="slide-num">12 / 15</span>
                 </div>
                 <div class="research-layout">
                     <div class="research-info">
@@ -803,7 +895,8 @@
                         </ul>
                     </div>
                     <div class="project-visual">
-                        <img src="assets/urban_mobility.png"
+                        <img src="assets/urban_mobility.webp" srcset="assets/urban_mobility-800.webp 800w, assets/urban_mobility.webp 1024w"
+                                sizes="(max-width: 1024px) 92vw, 560px" loading="lazy" decoding="async"
                             alt="Generative urban road grid structure simulation map layout">
                     </div>
                 </div>
@@ -811,11 +904,11 @@
         </section>
 
         <!-- SLIDE 13: Education & Credentials -->
-        <section class="slide">
+        <section class="slide" id="education">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Education &amp; Credentials</h2>
-                    <span class="slide-num">13 / 14</span>
+                    <span class="slide-num">13 / 15</span>
                 </div>
                 <div class="education-grid">
                     <div class="edu-timeline">
@@ -861,7 +954,7 @@
                                     <i class="fas fa-award"></i> Level 2 Qualifier, Deloitte Hacksplosion 2026
                                 </div>
                                 <div class="honor-item">
-                                    <i class="fas fa-laptop-code"></i> 200+ Solved DSA Problems on LeetCode
+                                    <i class="fas fa-laptop-code"></i> <span data-stat="leetcode">200+</span>&nbsp;Solved DSA Problems on LeetCode
                                 </div>
                             </div>
                         </div>
@@ -871,11 +964,11 @@
         </section>
 
         <!-- SLIDE 14: Bored of Reading? -->
-        <section class="slide">
+        <section class="slide" id="play">
             <div class="slide-content">
                 <div class="slide-header">
                     <h2>Bored of Reading?</h2>
-                    <span class="slide-num">14 / 14</span>
+                    <span class="slide-num">14 / 15</span>
                 </div>
                 <div class="bored-layout">
                     <div class="bored-text-content">
@@ -961,6 +1054,97 @@
             </div>
         </section>
 
+        <!-- SLIDE 15: Contact -->
+        <section class="slide" id="contact">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h2>Let's Connect</h2>
+                    <span class="slide-num">15 / 15</span>
+                </div>
+                <div class="contact-layout">
+                    <div class="contact-info">
+                        <h3>Have a role, project or idea in mind?</h3>
+                        <p class="contact-lead">
+                            I'm open to Full-Stack, AI/ML engineering and cloud roles — remote or on-site.
+                            Send a message and I'll get back to you.
+                        </p>
+                        <div class="contact-actions">
+                            <button type="button" class="social-btn copy-email" data-copy="anshulmandekar21@gmail.com"
+                                title="Copy email address">
+                                <i class="fas fa-envelope"></i> anshulmandekar21@gmail.com
+                            </button>
+                            <a href="assets/Anshul_Mandekar_Resume.pdf" download="Anshul_Mandekar_Resume.pdf"
+                                class="social-btn social-btn-solid">
+                                <i class="fas fa-file-arrow-down"></i> Download CV
+                            </a>
+                        </div>
+                        <div class="live-stats" aria-live="polite">
+                            <div class="live-stats-head">
+                                <span class="live-dot"></span> Live stats
+                                <span class="live-stats-src">GitHub · LeetCode</span>
+                            </div>
+                            <div class="live-stats-grid">
+                                <a class="live-stat" href="https://github.com/AnshulMandekar?tab=repositories"
+                                    target="_blank" rel="noopener">
+                                    <b data-stat="repos">—</b><span>Public repos</span>
+                                </a>
+                                <a class="live-stat" href="https://github.com/AnshulMandekar" target="_blank"
+                                    rel="noopener">
+                                    <b data-stat="followers">—</b><span>GitHub followers</span>
+                                </a>
+                                <a class="live-stat" href="https://leetcode.com/u/anshulmandekar21/" target="_blank"
+                                    rel="noopener">
+                                    <b data-stat="leetcode">200+</b><span>LeetCode solved</span>
+                                </a>
+                                <a class="live-stat" href="https://github.com/AnshulMandekar" target="_blank"
+                                    rel="noopener">
+                                    <b data-stat="language">—</b><span>Top language</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Set data-endpoint to a Formspree URL (https://formspree.io/f/…) to receive messages
+                         directly; without it the form hands the message to the visitor's email app. -->
+                    <form class="contact-form" id="contact-form" data-endpoint="" novalidate>
+                        <fieldset class="form-reasons">
+                            <legend>I'm reaching out about…</legend>
+                            <label><input type="radio" name="reason" value="Job opportunity" checked><span>Job opportunity</span></label>
+                            <label><input type="radio" name="reason" value="Freelance project"><span>Freelance project</span></label>
+                            <label><input type="radio" name="reason" value="Collaboration"><span>Collaboration</span></label>
+                            <label><input type="radio" name="reason" value="Just saying hi"><span>Just saying hi</span></label>
+                        </fieldset>
+                        <div class="form-row">
+                            <label class="field">
+                                <span>Name</span>
+                                <input type="text" name="name" autocomplete="name" required maxlength="80">
+                                <small class="field-error"></small>
+                            </label>
+                            <label class="field">
+                                <span>Email</span>
+                                <input type="email" name="email" autocomplete="email" required maxlength="120">
+                                <small class="field-error"></small>
+                            </label>
+                        </div>
+                        <label class="field">
+                            <span>Message</span>
+                            <textarea name="message" rows="4" required maxlength="2000"></textarea>
+                            <small class="field-error"></small>
+                        </label>
+                        <!-- Honeypot: real visitors never see or fill this -->
+                        <input type="text" name="_gotcha" class="form-hp" tabindex="-1" autocomplete="off"
+                            aria-hidden="true">
+                        <div class="form-footer">
+                            <button type="submit" class="form-submit">
+                                <i class="fas fa-paper-plane"></i> <span>Send message</span>
+                            </button>
+                            <p class="form-note" id="form-note">Opens in your email app, ready to send.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Command Palette (Ctrl/⌘ + K or "/") -->
@@ -1004,10 +1188,22 @@
 
     <!-- ElevenLabs Conversational AI Widget -->
     <elevenlabs-convai agent-id="agent_5501kxqsfx1wew8rv19gh6nt983x"></elevenlabs-convai>
-    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+    <script>
+        // Load the widget after the page is idle so it doesn't delay the first paint
+        window.addEventListener('load', function () {
+            function loadWidget() {
+                var s = document.createElement('script');
+                s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+                s.async = true;
+                document.body.appendChild(s);
+            }
+            if ('requestIdleCallback' in window) requestIdleCallback(loadWidget, { timeout: 3000 });
+            else setTimeout(loadWidget, 1500);
+        });
+    </script>
 
     <!-- Interaction Controller Script -->
-    <script src="script.js"></script>
+    <script src="script.js?v=20260927"></script>
 </body>
 
 </html>

@@ -8,41 +8,77 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentNumEl = document.getElementById('current-num');
   const modeToggleBtn = document.getElementById('mode-toggle');
   const progressFill = document.getElementById('progress-fill');
+  const sidebar = document.querySelector('.sidebar-dots');
+  const presControls = document.querySelector('.pres-controls');
 
+  const pad = (n) => String(n).padStart(2, '0');
   let activeIndex = 0;
   let lastAnnouncedIndex = -1;
   const totalSlides = slides.length;
-  let isPresentationMode = true;
+  // index.html may already have switched to the saved scroll view before this runs
+  let isPresentationMode = !body.classList.contains('document-mode');
 
   // Overlays (command palette, lightbox, mini-game) add a lock here so the
   // slide keyboard shortcuts stay out of their way while they are open.
   const keyLocks = new Set();
 
-  // Initialize slides indexing
+  // Initialize slides indexing. Each slide's id doubles as its shareable #link.
   slides.forEach((slide, idx) => {
     slide.dataset.slideIndex = idx;
-    slide.setAttribute('id', `slide-${idx}`);
+    if (!slide.id) slide.id = `slide-${idx}`;
+    const num = slide.querySelector('.slide-num');
+    if (num) num.textContent = `${pad(idx + 1)} / ${pad(totalSlides)}`;
   });
 
-  // Function to scroll to a specific slide index
-  function scrollToSlide(index) {
+  function indexFromHash(hash) {
+    const id = decodeURIComponent((hash || '').replace(/^#/, ''));
+    return id ? [...slides].findIndex(slide => slide.id === id) : -1;
+  }
+
+  function urlFor(index) {
+    const base = location.pathname + location.search;
+    return index === 0 ? base : `${base}#${slides[index].id}`;
+  }
+
+  // Function to scroll to a specific slide index.
+  // push = true records a browser history entry (dots, links, palette) so the
+  // Back button returns to the previous slide; instant = true skips the animation.
+  function scrollToSlide(index, push = false, instant = false) {
     if (index < 0 || index >= totalSlides) return;
 
-    const targetSlide = document.getElementById(`slide-${index}`);
+    const targetSlide = slides[index];
+    if (push && index !== activeIndex) history.pushState({ slide: index }, '', urlFor(index));
+
     if (isPresentationMode) {
-      targetSlide.scrollIntoView({ behavior: 'smooth' });
+      if (instant) {
+        container.style.scrollBehavior = 'auto';
+        container.scrollTop += targetSlide.getBoundingClientRect().top - container.getBoundingClientRect().top;
+        requestAnimationFrame(() => { container.style.scrollBehavior = ''; });
+      } else {
+        targetSlide.scrollIntoView({ behavior: 'smooth' });
+      }
     } else {
-      // In document mode, scroll with an offset for the header if needed
-      const headerOffset = 80;
-      const elementPosition = targetSlide.getBoundingClientRect().top + window.scrollY;
-      const offsetPosition = elementPosition - headerOffset;
+      // In document mode the window scrolls; each slide's top padding clears the header
       window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
+        top: targetSlide.getBoundingClientRect().top + window.scrollY,
+        behavior: instant ? 'auto' : 'smooth'
       });
     }
     activeIndex = index;
     updateUI(activeIndex);
+  }
+
+  // Top progress bar: slide position in presentation mode, reading position in scroll view
+  function updateProgress() {
+    if (!progressFill) return;
+    let pct;
+    if (isPresentationMode) {
+      pct = (activeIndex / Math.max(1, totalSlides - 1)) * 100;
+    } else {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+    }
+    progressFill.style.width = `${pct}%`;
   }
 
   // Update Dots, Arrows, and Counter
@@ -71,43 +107,40 @@ document.addEventListener('DOMContentLoaded', () => {
       nextBtn.disabled = index === totalSlides - 1;
 
       // Update presentation counter (format like 01 / 11)
-      const currentFormatted = String(index + 1).padStart(2, '0');
-      const totalFormatted = String(totalSlides).padStart(2, '0');
-      currentNumEl.innerHTML = `<span>${currentFormatted}</span> / ${totalFormatted}`;
+      currentNumEl.innerHTML = `<span>${pad(index + 1)}</span> / ${pad(totalSlides)}`;
     }
 
-    // Top progress bar
-    if (progressFill) {
-      progressFill.style.width = `${(index / Math.max(1, totalSlides - 1)) * 100}%`;
-    }
+    updateProgress();
 
-    // Let the interactive modules know which slide is now on screen
     if (index !== lastAnnouncedIndex) {
       lastAnnouncedIndex = index;
+      // Keep the address bar pointing at the slide on screen (without adding history entries)
+      if (location.pathname + location.search + location.hash !== urlFor(index)) {
+        history.replaceState(history.state, '', urlFor(index));
+      }
+      // Let the interactive modules know which slide is now on screen
       document.dispatchEvent(new CustomEvent('slidechange', { detail: { index, slide: slides[index] } }));
     }
   }
 
-  // Set up Intersection Observer for scrolling detection in Presentation Mode
-  const observerOptions = {
-    root: isPresentationMode ? container : null,
-    threshold: 0.45 // Trigger when 45% of the slide is in view
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    if (!isPresentationMode) return;
-
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const index = parseInt(entry.target.dataset.slideIndex, 10);
-        activeIndex = index;
-        updateUI(activeIndex);
-      }
-    });
-  }, observerOptions);
-
-  // Start observing slides
-  slides.forEach(slide => observer.observe(slide));
+  // Intersection Observer decides which slide is "active" while scrolling.
+  // Slides mode watches the snapping container; scroll view watches a band
+  // across the middle of the window.
+  let observer = null;
+  function observeSlides() {
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          activeIndex = parseInt(entry.target.dataset.slideIndex, 10);
+          updateUI(activeIndex);
+        }
+      });
+    }, isPresentationMode
+      ? { root: container, threshold: 0.45 } // Trigger when 45% of the slide is in view
+      : { root: null, rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    slides.forEach(slide => observer.observe(slide));
+  }
 
   // Arrow Nav Clicks
   if (prevBtn) {
@@ -125,15 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
   // Navigation Dots Clicks
   dots.forEach((dot, idx) => {
     dot.addEventListener('click', () => {
-      scrollToSlide(idx);
+      scrollToSlide(idx, true);
     });
+  });
+
+  // In-page links like href="#finveritas" jump to that slide (and can be shared)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    const index = indexFromHash(link.getAttribute('href'));
+    if (index < 0) return;
+    e.preventDefault();
+    scrollToSlide(index, true);
+  });
+
+  // Back / Forward buttons and hand-edited #hashes
+  window.addEventListener('popstate', () => {
+    const index = indexFromHash(location.hash);
+    scrollToSlide(index < 0 ? 0 : index);
   });
 
   // Mouse clicks shouldn't leave focus parked on a button, otherwise the
   // next Space press re-activates it instead of advancing the slides.
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button, [role="button"]');
-    if (btn && e.detail > 0 && !btn.closest('.cmdk, .lightbox')) btn.blur();
+    if (btn && e.detail > 0 && !btn.closest('.cmdk, .lightbox, form')) btn.blur();
   });
 
   // Keyboard Event Navigation (Only in Presentation Mode)
@@ -144,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Don't intercept if user is typing in form inputs
     const active = document.activeElement;
-    if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName)) return;
     // Let Space/Enter activate a focused button or link
     if (e.key === ' ' && active.closest('button, a, [role="button"]')) return;
 
@@ -164,42 +213,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Presentation Mode vs Document Mode Toggling
+  // Presentation Mode (slides) vs Document Mode (normal scrolling page)
+  function applyMode(presentation, save) {
+    isPresentationMode = presentation;
+    body.classList.toggle('presentation-mode', presentation);
+    body.classList.toggle('document-mode', !presentation);
+    if (sidebar) sidebar.classList.toggle('hidden', !presentation);
+    if (presControls) presControls.classList.toggle('hidden', !presentation);
+
+    if (modeToggleBtn) {
+      const label = presentation ? 'Switch to scroll view' : 'Switch to slides';
+      modeToggleBtn.setAttribute('aria-label', label);
+      modeToggleBtn.title = label;
+      modeToggleBtn.innerHTML = `<i class="fas ${presentation ? 'fa-align-left' : 'fa-person-chalkboard'}"></i>`;
+    }
+    if (save) {
+      try { localStorage.setItem('portfolio.view', presentation ? 'slides' : 'document'); } catch (e) { /* storage unavailable */ }
+    }
+    observeSlides();
+  }
+
   if (modeToggleBtn) {
     modeToggleBtn.addEventListener('click', () => {
-      isPresentationMode = !isPresentationMode;
-
-      const sidebar = document.querySelector('.sidebar-dots');
-      const presControls = document.querySelector('.pres-controls');
-
-      if (isPresentationMode) {
-        body.classList.remove('document-mode');
-        body.classList.add('presentation-mode');
-
-        if (sidebar) sidebar.classList.remove('hidden');
-        if (presControls) presControls.classList.remove('hidden');
-
-        modeToggleBtn.innerHTML = '<i class="fas fa-file-alt"></i> Document View';
-
-        // Relayout and snap to current active slide
-        setTimeout(() => {
-          scrollToSlide(activeIndex);
-        }, 100);
-      } else {
-        body.classList.remove('presentation-mode');
-        body.classList.add('document-mode');
-
-        if (sidebar) sidebar.classList.add('hidden');
-        if (presControls) presControls.classList.add('hidden');
-
-        modeToggleBtn.innerHTML = '<i class="fas fa-play"></i> Present Mode';
-
-        // Remove transitions style during window scroll to prevent layout jumpiness
-        scrollToSlide(activeIndex);
-      }
+      const keep = activeIndex;
+      applyMode(!isPresentationMode, true);
+      // Land on the same slide in the new layout
+      scrollToSlide(keep, false, true);
     });
   }
 
+  window.addEventListener('scroll', () => { if (!isPresentationMode) updateProgress(); }, { passive: true });
+
+  applyMode(isPresentationMode, false);
 
   // Wire up the interactive layer before the first slidechange fires
   initInteractiveLayer({
@@ -207,12 +252,18 @@ document.addEventListener('DOMContentLoaded', () => {
     dots,
     container,
     keyLocks,
-    scrollToSlide,
+    // Modules navigate on purpose (palette, skill links…), so record history by default
+    scrollToSlide: (index, push = true) => scrollToSlide(index, push),
     get activeIndex() { return activeIndex; }
   });
 
-  // Set initial UI state
-  updateUI(activeIndex);
+  // Open the slide named in the URL (e.g. …/#taskflow), otherwise start at the cover
+  const initialIndex = indexFromHash(location.hash);
+  if (initialIndex > 0) {
+    scrollToSlide(initialIndex, false, true);
+  } else {
+    updateUI(activeIndex);
+  }
 
   // ── Touch Swipe Support (Mobile) ──────────────────────────────
   // Allows mobile users to swipe up/down to navigate slides.
@@ -227,6 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   container.addEventListener('touchend', (e) => {
     if (!isPresentationMode) return;
+    if (e.target.closest('input, textarea')) return;
 
     const deltaX = e.changedTouches[0].clientX - touchStartX;
     const deltaY = e.changedTouches[0].clientY - touchStartY;
@@ -298,11 +350,13 @@ window.setProjectSlider = function(sliderId, targetIdx) {
 // ═══════════════════════════════════════════════════════════════
 
 const EMAIL = 'anshulmandekar21@gmail.com';
+const RESUME_URL = 'assets/Anshul_Mandekar_Resume.pdf';
 
 function initInteractiveLayer(app) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+  initThemeToggle();
   initCursorSpotlight(finePointer, reduceMotion);
   initHeroCanvas(app, reduceMotion);
   initTypewriter(reduceMotion);
@@ -316,6 +370,8 @@ function initInteractiveLayer(app) {
   initLightbox(app);
   initCommandPalette(app);
   initConsoleGame(app);
+  initContactForm();
+  initLiveStats();
   initKonami(reduceMotion);
 }
 
@@ -388,6 +444,14 @@ function initHeroCanvas(app, reduceMotion) {
   const mouse = { x: -9999, y: -9999 };
   const LINK = 120, REACH = 170;
   let w = 0, h = 0, nodes = [], running = false, rafId = 0;
+  let fg = '255,255,255', accent = '124,131,232';
+
+  // Line / node colours follow the light or dark theme
+  function readColours() {
+    const light = document.documentElement.dataset.theme === 'light';
+    fg = getComputedStyle(document.documentElement).getPropertyValue('--fg-rgb').trim() || '255,255,255';
+    accent = light ? '91,98,214' : '124,131,232';
+  }
 
   function resize() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -429,7 +493,7 @@ function initHeroCanvas(app, reduceMotion) {
         const b = nodes[j];
         const d = Math.hypot(a.x - b.x, a.y - b.y);
         if (d < LINK) {
-          ctx.strokeStyle = `rgba(255,255,255,${(1 - d / LINK) * 0.14})`;
+          ctx.strokeStyle = `rgba(${fg},${(1 - d / LINK) * 0.14})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
@@ -439,7 +503,7 @@ function initHeroCanvas(app, reduceMotion) {
       }
       const dm = Math.hypot(a.x - mouse.x, a.y - mouse.y);
       if (dm < REACH + 40) {
-        ctx.strokeStyle = `rgba(124,131,232,${(1 - dm / (REACH + 40)) * 0.5})`;
+        ctx.strokeStyle = `rgba(${accent},${(1 - dm / (REACH + 40)) * 0.5})`;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y);
         ctx.lineTo(mouse.x, mouse.y);
@@ -447,7 +511,7 @@ function initHeroCanvas(app, reduceMotion) {
       }
     }
     for (const n of nodes) {
-      ctx.fillStyle = n.accent ? 'rgba(124,131,232,0.9)' : 'rgba(255,255,255,0.45)';
+      ctx.fillStyle = n.accent ? `rgba(${accent},0.9)` : `rgba(${fg},0.45)`;
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
       ctx.fill();
@@ -476,7 +540,9 @@ function initHeroCanvas(app, reduceMotion) {
   window.addEventListener('resize', () => { resize(); if (!running) draw(); });
   document.addEventListener('visibilitychange', () => setRunning(!document.hidden && app.activeIndex === heroIndex));
   document.addEventListener('slidechange', (e) => setRunning(e.detail.index === heroIndex));
+  document.addEventListener('themechange', () => { readColours(); if (!running) draw(); });
 
+  readColours();
   resize();
 }
 
@@ -847,7 +913,7 @@ function initLightbox(app) {
 
   function render() {
     const im = group[idx];
-    img.src = im.currentSrc || im.src;
+    img.src = im.src; // always the full-size file, even if the page used a smaller srcset variant
     img.alt = im.alt;
     caption.textContent = im.alt;
     counter.textContent = `${idx + 1} / ${group.length}`;
@@ -964,8 +1030,30 @@ function initCommandPalette(app) {
   });
 
   items.push(
+    { group: 'Actions', label: 'Download CV (PDF)', keywords: 'resume curriculum vitae pdf', icon: 'fas fa-file-arrow-down',
+      run: () => {
+        const a = document.createElement('a');
+        a.href = RESUME_URL;
+        a.download = 'Anshul_Mandekar_Resume.pdf';
+        document.body.append(a);
+        a.click();
+        a.remove();
+      } },
+    { group: 'Actions', label: 'Send me a message', keywords: 'contact form hire email reach', icon: 'fas fa-paper-plane',
+      run: () => {
+        const contact = [...app.slides].findIndex(s => s.id === 'contact');
+        if (contact >= 0) app.scrollToSlide(contact);
+        const name = document.querySelector('#contact-form [name="name"]');
+        if (name) setTimeout(() => name.focus({ preventScroll: true }), 700);
+      } },
     { group: 'Actions', label: 'Copy email address', keywords: 'contact mail hire', icon: 'fas fa-copy', meta: EMAIL,
       run: () => copyToClipboard(EMAIL, 'Email copied to clipboard') },
+    { group: 'Actions', label: 'Copy link to this slide', keywords: 'share url permalink', icon: 'fas fa-link',
+      run: () => copyToClipboard(location.href, 'Link copied to clipboard') },
+    { group: 'Actions', label: 'Toggle light / dark theme', keywords: 'theme colour color mode appearance', icon: 'fas fa-circle-half-stroke',
+      run: () => { const t = document.getElementById('theme-toggle'); if (t) t.click(); } },
+    { group: 'Actions', label: 'Toggle slides / scroll view', keywords: 'document reading layout view mode', icon: 'fas fa-align-left',
+      run: () => { const m = document.getElementById('mode-toggle'); if (m) m.click(); } },
     { group: 'Actions', label: 'Send me an email', keywords: 'contact mail hire', icon: 'fas fa-envelope',
       run: () => { window.location.href = `mailto:${EMAIL}`; } },
     { group: 'Actions', label: 'Launch the 3D world', keywords: 'game play three island', icon: 'fas fa-gamepad',
@@ -975,7 +1063,7 @@ function initCommandPalette(app) {
   );
 
   // External links are read from the page, labelled with the slide they live on
-  document.querySelectorAll('.slide a[target="_blank"]').forEach(a => {
+  document.querySelectorAll('.slide a[target="_blank"]:not(.live-stat)').forEach(a => {
     const slideIdx = [...app.slides].indexOf(a.closest('.slide'));
     const dotLabel = app.dots[slideIdx].querySelector('.dot-label').textContent.replace(/^Project:\s*/, '');
     const text = a.textContent.trim();
@@ -1363,11 +1451,200 @@ function initConsoleGame(app) {
   window.addEventListener('resize', () => { if (state !== 'idle') resize(); });
 }
 
+// ── Light / dark theme ──────────────────────────────────────────
+// index.html applies the saved theme before first paint; this keeps the
+// toggle button, browser theme colour and canvas colours in sync.
+function initThemeToggle() {
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+
+  function apply(theme, save) {
+    const light = theme === 'light';
+    if (light) root.dataset.theme = 'light';
+    else delete root.dataset.theme;
+    if (btn) {
+      const label = light ? 'Switch to dark theme' : 'Switch to light theme';
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
+      btn.innerHTML = `<i class="fas ${light ? 'fa-moon' : 'fa-sun'}"></i>`;
+    }
+    if (metaTheme) metaTheme.setAttribute('content', light ? '#f5f5f2' : '#0a0a0a');
+    if (save) {
+      try { localStorage.setItem('portfolio.theme', theme); } catch (e) { /* storage unavailable */ }
+    }
+    document.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+  }
+
+  apply(root.dataset.theme === 'light' ? 'light' : 'dark', false);
+  if (btn) btn.addEventListener('click', () => apply(root.dataset.theme === 'light' ? 'dark' : 'light', true));
+}
+
+// ── Contact form ────────────────────────────────────────────────
+// With data-endpoint set (e.g. a Formspree URL) messages are posted there;
+// otherwise the message opens pre-filled in the visitor's email app.
+function initContactForm() {
+  const form = document.getElementById('contact-form');
+  if (!form) return;
+  const note = document.getElementById('form-note');
+  const submit = form.querySelector('.form-submit');
+  const submitLabel = submit.querySelector('span');
+  const endpoint = (form.dataset.endpoint || '').trim();
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const fields = {
+    name: (v) => (v ? '' : 'Please add your name.'),
+    email: (v) => (EMAIL_RE.test(v) ? '' : 'Please enter a valid email address.'),
+    message: (v) => (v.length >= 10 ? '' : 'A few more words, please (at least 10 characters).')
+  };
+
+  if (endpoint && note) note.textContent = 'Messages come straight to my inbox.';
+
+  function check(name) {
+    const input = form.elements[name];
+    const msg = fields[name](input.value.trim());
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    const err = input.parentElement.querySelector('.field-error');
+    if (err) err.textContent = msg;
+    return !msg;
+  }
+
+  Object.keys(fields).forEach(name => {
+    const input = form.elements[name];
+    // Re-validate as they type once a field has been flagged
+    input.addEventListener('input', () => { if (input.getAttribute('aria-invalid') === 'true') check(name); });
+    input.addEventListener('blur', () => { if (input.value.trim()) check(name); });
+  });
+
+  function openMailApp(data) {
+    const subject = `${data.reason} — from ${data.name}`;
+    const text = `${data.message}\n\n— ${data.name} (${data.email})`;
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+    showToast('Opening your email app…', 'fa-envelope');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (form.elements._gotcha.value) return; // bots fill the hidden honeypot
+
+    const valid = Object.keys(fields).map(check);
+    if (valid.includes(false)) {
+      form.elements[Object.keys(fields)[valid.indexOf(false)]].focus();
+      return;
+    }
+
+    const data = {
+      reason: (form.querySelector('[name="reason"]:checked') || {}).value || 'Hello',
+      name: form.elements.name.value.trim(),
+      email: form.elements.email.value.trim(),
+      message: form.elements.message.value.trim()
+    };
+
+    if (!endpoint) {
+      openMailApp(data);
+      return;
+    }
+
+    submit.disabled = true;
+    submitLabel.textContent = 'Sending…';
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ ...data, _subject: `Portfolio: ${data.reason} — ${data.name}` })
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      form.reset();
+      showToast("Thanks! Your message is on its way.", 'fa-paper-plane');
+    } catch (err) {
+      showToast("Couldn't send — opening your email app instead.", 'fa-triangle-exclamation');
+      openMailApp(data);
+    } finally {
+      submit.disabled = false;
+      submitLabel.textContent = 'Send message';
+    }
+  });
+}
+
+// ── Live GitHub / LeetCode stats ────────────────────────────────
+// Fetched after the page has loaded and cached for an hour, so a visitor
+// never waits on (or rate-limits) the public APIs. The HTML keeps sensible
+// fallbacks ("200+") if a request fails.
+const GITHUB_USER = 'AnshulMandekar';
+const LEETCODE_USER = 'anshulmandekar21';
+
+function initLiveStats() {
+  const panel = document.querySelector('.live-stats');
+  const CACHE_KEY = 'portfolio.liveStats';
+  const TTL = 60 * 60 * 1000;
+
+  function render(stats) {
+    Object.entries(stats).forEach(([key, value]) => {
+      document.querySelectorAll(`[data-stat="${key}"]`).forEach(el => {
+        const text = String(value);
+        if (el.textContent === text) return;
+        el.textContent = text;
+        el.classList.remove('stat-updated');
+        void el.offsetWidth;
+        el.classList.add('stat-updated');
+      });
+    });
+  }
+
+  function getJSON(url, ms) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal })
+      .then(res => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
+      .finally(() => clearTimeout(timer));
+  }
+
+  async function refresh() {
+    const [user, repos, leetcode] = await Promise.allSettled([
+      getJSON(`https://api.github.com/users/${GITHUB_USER}`, 8000),
+      getJSON(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, 8000),
+      // LeetCode has no public CORS API, so this goes through a community proxy
+      getJSON(`https://alfa-leetcode-api.onrender.com/${LEETCODE_USER}/solved`, 12000)
+    ]);
+
+    const stats = {};
+    if (user.status === 'fulfilled') {
+      stats.repos = user.value.public_repos;
+      stats.followers = user.value.followers;
+    }
+    if (repos.status === 'fulfilled' && Array.isArray(repos.value)) {
+      const counts = {};
+      repos.value.filter(r => !r.fork && r.language).forEach(r => { counts[r.language] = (counts[r.language] || 0) + 1; });
+      const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      if (top) stats.language = top[0];
+    }
+    if (leetcode.status === 'fulfilled' && Number.isFinite(leetcode.value.solvedProblem)) {
+      stats.leetcode = leetcode.value.solvedProblem;
+    }
+
+    if (!Object.keys(stats).length) {
+      if (panel) panel.classList.add('offline');
+      return;
+    }
+    render(stats);
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), stats })); } catch (e) { /* storage unavailable */ }
+  }
+
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(CACHE_KEY)); } catch (e) { cached = null; }
+  if (cached && cached.stats) render(cached.stats);
+  if (cached && Date.now() - cached.at < TTL) return;
+
+  const start = () => setTimeout(refresh, 1200);
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+}
+
 // ── Konami code easter egg ──────────────────────────────────────
 function initKonami(reduceMotion) {
   const seq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
   let pos = 0;
   window.addEventListener('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
     const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
     pos = key === seq[pos] ? pos + 1 : (key === seq[0] ? 1 : 0);
     if (pos === seq.length) {
